@@ -85,12 +85,6 @@ public abstract class Node
      */
     public abstract ArrayList<Node> expandNode();
 
-    /**
-     * Tests if the goal of game has been accomplished in this node.
-     * @return True if the game has been won and false otherwise.
-     */
-    public abstract boolean testGoal();
-
     public abstract GameBoard getGameBoard();
 
     /**

@@ -22,7 +22,23 @@ public class BlockIt
 
     public static void play()
     {
+        for(Player player: players)
+        {
+            System.out.println(player.getColor() + " Player's turn");
+
+            if(player.getDifficulty() == 1) //Human
+            {
+                
+            }
+            else
+            {
+                
+            }
+        }
+
         Player.getBoard().printBoard();
+
+
 
     }
 
@@ -33,10 +49,13 @@ public class BlockIt
 
         for(int i = 0; i < boardSize; i++)
             for(int j = 0; j < boardSize; j++)
-                if(j % 2 == 0 || i % 2 == 0)
-                    charBoard[i][j] = '_';
-                else
+                if(i % 2 != 0)
                     charBoard[i][j] = ' ';
+                else
+                    if(j % 2 == 0)
+                        charBoard[i][j] = '_';
+                    else
+                        charBoard[i][j] = ' ';
 
         for(Player player: players)
             charBoard[player.getPosition()[0]][player.getPosition()[1]] = player.getColor();

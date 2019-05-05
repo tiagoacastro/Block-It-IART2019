@@ -68,43 +68,23 @@ public class GameNode extends Node
         ArrayList<Node> nodeList = new ArrayList<>();
         char[][] board = getBoard();
         char piece;
-        int[] pieceCoords = new int[2];
-
-       
+        int[] coords = new int[2];
 
         return nodeList;
     }
 
     /**
-     * Tests if the goal of game has been accomplished in this node.
-     * @return True if the game has been won and false otherwise.
-     */
-    public boolean testGoal()
-    {
-        char[][] board = getBoard();
-
-        analyzedNodes++;
-
-        for(char[] line : board)
-            for(char cell : line)
-                if(cell != '_')
-                    return false;
-
-        return true;
-    }
-
-    /**
      * Moves a piece in the board.
      * @param direction The direction in which to move the piece.
-     * @param pieceCoords The coordinates of the piece.
+     * @param coords The coordinates of the piece.
      * @return A new node representing the board if the move was succesfull or null if not. 
      */
-    private GameNode move(String direction, int[] pieceCoords)
+    private GameNode move(String direction, int[] coords)
     {
         GameBoard newBoard ;
         String op;
         
-        if(board.testPieceCoords(pieceCoords))
+        if(board.testCoords(coords))
         {
             System.out.println("Invalid piece in move " + direction);
             return null;
@@ -113,13 +93,23 @@ public class GameNode extends Node
         switch(direction)
         {
             case "left":
-                newBoard = board.movePieceLeft(pieceCoords);
-                op = "move left " + pieceCoords[0] + " " +  pieceCoords[1];
+                newBoard = board.moveLeft(coords);
+                op = "Move left ";
                 break;
 
             case "right":
-                newBoard = board.movePieceRight(pieceCoords);
-                op = "move right " + pieceCoords[0] + " " + pieceCoords[1];
+                newBoard = board.moveRight(coords);
+                op = "Move Right";
+                break;
+
+            case "up":
+                newBoard = board.moveUp(coords);
+                op = "Move Up";
+                break;
+
+            case "down":
+                newBoard = board.moveDown(coords);
+                op = "Move Down";
                 break;
 
             default:
@@ -137,7 +127,7 @@ public class GameNode extends Node
     {
         String[] move;
         String op, direction;
-        int[] pieceCoords = new int[2];
+        int[] coords = new int[2];
 
         GameBoard.setShowMove(true);
 
@@ -155,15 +145,15 @@ public class GameNode extends Node
             
             op = move[0];
             direction = move[1];
-            pieceCoords[0] = Integer.parseInt(move[2]);
-            pieceCoords[1] = Integer.parseInt(move[3]);
+            coords[0] = Integer.parseInt(move[2]);
+            coords[1] = Integer.parseInt(move[3]);
 
             System.out.println("\n" + op + " " + direction + "(" + move[2] + "," + move[3] + ")\n");
 
             try 
             {
                 if (op.equals("move"))
-                    this.board = this.move(direction, pieceCoords).getGameBoard();
+                    this.board = this.move(direction, coords).getGameBoard();
                 //else put barrier
             } 
             catch(NullPointerException e)
