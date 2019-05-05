@@ -23,6 +23,7 @@ public class BlockIt
     public static void play()
     {
         Player.getBoard().printBoard();
+
     }
 
     public static void buildBoard()
@@ -92,6 +93,9 @@ public class BlockIt
 
         do
         {
+            players.clear();
+            players.trimToSize();
+
             for(int i = 1; i <= 4; i++)
             {
                 System.out.println
@@ -139,12 +143,7 @@ public class BlockIt
             }
 
             if(playerCounter <= 1)
-            {
                 System.out.println("There must be at least two players");
-                players.clear();
-                players.trimToSize();
-            }
-                
         }
         while(playerCounter <= 1);
     }
