@@ -9,12 +9,14 @@ import java.util.InputMismatchException;
 
 public class BlockIt 
 {
-    private static  ArrayList<Player> players;
+    private static ArrayList<Player> players;
+    private static Scanner scanner;
 
     public static void main(String[] args) throws Exception 
     {
         Player.setMaxBarriers(5);
         GameBoard.setBoardSize(17);
+        scanner = new Scanner(System.in);
         players = new ArrayList<Player>();
 
         mainMenu();
@@ -28,18 +30,49 @@ public class BlockIt
 
             if(player.getDifficulty() == 1) //Human
             {
-                
+                int option;
+
+                System.out.println
+                (
+                    "+----------+-------------------+\n" +
+                    "| 1 - Move | 2 - Place Barrier |\n" +
+                    "+----------+-------------------+\n"
+                );
+
+                option = getOption(2);
+
+                boolean validPlay;
+
+                switch(option)
+                {
+                    case 1:
+                        System.out.println("Type the direction in which you wish to move (up, down, left or right)");
+                        
+                        do
+                        {
+                            validPlay = player.move(scanner.nextLine());
+                        }
+                        while(!validPlay);
+
+                        break;
+
+                    case 2:
+                        System.out.println("Type the coordinates of the central piece of the barrier in the format x,y (no spaces)");
+                        
+                        do
+                        {
+                            validPlay = player.useBarrier(scanner.nextLine());
+                        }
+                        while(!validPlay);       
+                }
             }
-            else
+            else //Bot
             {
                 
             }
         }
 
         Player.getBoard().printBoard();
-
-
-
     }
 
     public static void buildBoard()
@@ -103,6 +136,8 @@ public class BlockIt
             }
         }
         while(option != 4);
+
+        scanner.close();
     }
 
     public static void playMenu()
@@ -304,7 +339,6 @@ public class BlockIt
      */
     private static int getOption(int maxValue)
     {
-        Scanner scanner = new Scanner(System.in);
         int option;
 
         try

@@ -15,6 +15,11 @@ public class GreenPlayer extends Player
         color = 'G';
     }
 
+    public boolean useBarrier(String coords)
+    {
+        return false;
+    }
+
     public boolean isWinner()
     {
         return position[1] == 0;

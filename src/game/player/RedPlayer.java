@@ -15,6 +15,11 @@ public class RedPlayer extends Player
         color = 'R';
     }
 
+    public boolean useBarrier(String coords)
+    {
+        return false;
+    }
+
     public boolean isWinner()
     {
         return position[0] == GameBoard.getBoardSize() - 1;

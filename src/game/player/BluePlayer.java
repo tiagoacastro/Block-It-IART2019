@@ -15,6 +15,11 @@ public class BluePlayer extends Player
         color = 'B';
     }
 
+    public boolean useBarrier(String coords)
+    {
+        return false;
+    }
+
     public boolean isWinner()
     {
         return position[0] == 0;

@@ -15,6 +15,11 @@ public class YellowPlayer extends Player
         color = 'Y';
     }
 
+    public boolean useBarrier(String coords)
+    {
+        return false;
+    }
+
     public boolean isWinner()
     {
         return position[1] == GameBoard.getBoardSize() - 1;

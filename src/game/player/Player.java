@@ -1,11 +1,12 @@
 package game.player;
 
 import game.GameBoard;
+import game.GameNode;
 
 public abstract class Player
 {
     protected static int MAX_BARRIERS;
-    protected static GameBoard board;
+    protected static GameNode node;
 
     protected int[] position;
     protected int barriers;
@@ -29,39 +30,36 @@ public abstract class Player
         switch(move)
         {
             case "up":
-                newBoard = board.moveUp(position);
+                newBoard = node.getGameBoard().moveUp(position);
                 break;
 
             case "down":
-                newBoard = board.moveDown(position);
+                newBoard = node.getGameBoard().moveDown(position);
                 break;
 
             case "left":    
-                newBoard = board.moveLeft(position);
+                newBoard = node.getGameBoard().moveLeft(position);
                 break;
 
             case "right":
-                newBoard = board.moveRight(position);
+                newBoard = node.getGameBoard().moveRight(position);
                 break;
 
             default:
-                System.out.println("Unknown move: " + move);
+                System.out.println("Invalid move: " + move);
                 return false;
         }
 
         if(newBoard != null)
         {
-            board = newBoard;
+            node.setGameBoard(newBoard);
             return true;
         }
         else
             return false;
     }
 
-    public void useBarrier()
-    {
-        barriers--;
-    }
+    public abstract boolean useBarrier(String coords);
 
     public int getDifficulty()
     {
@@ -90,7 +88,7 @@ public abstract class Player
 
     public static GameBoard getBoard()
     {
-        return board;
+        return node.getGameBoard();
     }
 
     public static void setMaxBarriers(int maxBarriers)
@@ -100,6 +98,6 @@ public abstract class Player
 
     public static void setBoard(GameBoard gameBoard)
     {
-        board = gameBoard;
+        node.setGameBoard(gameBoard);
     }
 }

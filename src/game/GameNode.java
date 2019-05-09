@@ -202,4 +202,9 @@ public class GameNode extends Node
         return board.getBoard();
     }
 
+    public void setGameBoard(GameBoard board)
+    {
+        this.board = board;
+    }
+
 }

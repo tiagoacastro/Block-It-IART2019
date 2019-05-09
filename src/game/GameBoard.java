@@ -52,7 +52,7 @@ public class GameBoard
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; // Switch place
 
             if(showMove)
-                printBoardHighlightPiece(newBoard, newcoords);       
+                printBoard(newBoard);        
         }
 
         return new GameBoard(newBoard);
@@ -91,7 +91,7 @@ public class GameBoard
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
             if(showMove)
-                printBoardHighlightPiece(newBoard, newcoords);               
+                printBoard(newBoard);                
         }
 
         return new GameBoard(newBoard);
@@ -130,7 +130,7 @@ public class GameBoard
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
             if(showMove)
-                printBoardHighlightPiece(newBoard, newcoords);               
+                printBoard(newBoard);                
         }
 
         return new GameBoard(newBoard);
@@ -169,7 +169,7 @@ public class GameBoard
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
             if(showMove)
-                printBoardHighlightPiece(newBoard, newcoords);               
+                printBoard(newBoard);               
         }
 
         return new GameBoard(newBoard);
@@ -244,15 +244,25 @@ public class GameBoard
     private void printBoard(char[][] board)
     {
         System.out.print(" ");
+        
+        String header1 = "", header2 = "";
 
         for(int i = 0; i < GameBoard.getBoardSize(); i++)
-            System.out.print("|" + "b");
+        {
+            header1 += i + "|";
+            header2 += "|" + "b";
+        }
+            
+        System.out.println(header1);
+        System.out.println(header2);
 
         System.out.println('|');
 
-        for(char[] line : board)
+        for(int i = 0; i < board.length; i++)
         {
-            System.out.print("g" + "|");
+            char[] line = board[i];
+
+            System.out.print(i + "|" + "g" + "|");
 
             for(char cell : line) 
             {
@@ -261,7 +271,7 @@ public class GameBoard
                 System.out.print('|');
             }
 
-            System.out.println("y");
+            System.out.println("y" + "|" + i);
         }
 
         System.out.print(" ");
@@ -270,6 +280,7 @@ public class GameBoard
             System.out.print("|" + "b");
 
         System.out.println('|');
+        System.out.println(header1);
 
         try
         {
@@ -284,34 +295,6 @@ public class GameBoard
     }
 
     /**
-     * Prints a board while highlighting a piece.
-     * @param board The board to print.
-     * @param coords The piece's coordinates.
-     */
-    private void printBoardHighlightPiece(char[][] board, int[] coords)
-    {
-        for(int i = 0; i < board.length; i++)
-        {
-            System.out.print("|");
-
-            for(int j = 0; j < board[i].length; j++)
-            {
-                if(i == coords[0] && j == coords[1])
-                    System.out.print(Character.toUpperCase(board[i][j]));
-                else
-                    System.out.print(board[i][j]);
-
-                System.out.print('|');
-            }
-
-            System.out.print("\n");
-        }
-
-        System.out.print("\n");
-            
-    }
-
-    /**
      * Tests if a set of coordinates evaluates to an actual piece.
      * @param coords The piece's coordinates.
      * @return True if the coordinates don't correspond to a piece and false otherwise.
@@ -320,27 +303,6 @@ public class GameBoard
     {
         return coords[0] >= this.board.length || coords[1] >= this.board[0].length
         || coords[0] < 0 || coords[1] < 0 || this.board[coords[0]][coords[1]] == '_';
-    }
-    
-    /**
-     * Returns the number of blocks in a board.
-     * @param board The board in question.
-     * @return The number of blocks left in the board.
-     */
-    public static int getBlocksLeft(char[][] board)
-    {
-        int count = 0;
-
-        for(char[] line : board)
-        {
-            for(char cell : line)
-            {
-                if(cell != '_')
-                    count++;
-            } 
-        }
-
-        return count;
     }
 
     public boolean isEqual(GameBoard b) {
