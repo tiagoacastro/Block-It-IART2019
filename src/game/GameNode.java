@@ -207,4 +207,12 @@ public class GameNode extends Node
         this.board = board;
     }
 
+    /**
+     * Checks if current node is a leaf in the search tree
+     * @return True if the node is a leaf
+     */
+    public boolean isTerminal() {
+        return true;
+    }
+
 }
