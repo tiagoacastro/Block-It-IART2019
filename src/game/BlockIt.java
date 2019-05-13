@@ -15,6 +15,7 @@ public class BlockIt
     public static void main(String[] args) throws Exception 
     {
         Player.setMaxBarriers(5);
+        
         GameBoard.setBoardSize(17);
         scanner = new Scanner(System.in);
         players = new ArrayList<Player>();
@@ -70,9 +71,9 @@ public class BlockIt
             {
                 
             }
-        }
 
-        Player.getBoard().printBoard();
+            Player.getBoard().printBoard();
+        }
     }
 
     public static void buildBoard()
@@ -93,7 +94,10 @@ public class BlockIt
         for(Player player: players)
             charBoard[player.getPosition()[0]][player.getPosition()[1]] = player.getColor();
 
-        Player.setBoard(new GameBoard(charBoard));
+        if(Player.getNode() == null)
+            Player.setNode(new GameNode(null, 0, 0, "root", 1, 0, new GameBoard(charBoard)));
+        else
+            Player.setBoard(new GameBoard(charBoard));
     }
 
     public static void mainMenu()
