@@ -243,12 +243,12 @@ public class GameBoard
      */
     private void printBoard(char[][] board)
     {        
-        String header1 = "   ", header2 = "   ";
+        String header1 = "     ", header2 = "     ";
 
         for(int i = 0; i < GameBoard.getBoardSize(); i++)
         {
             header1 += "|" + String.format("%02d", i);
-            header2 += "|" + "b";
+            header2 += "|" + "bl";
         }
 
         header1 += "|";
@@ -261,22 +261,23 @@ public class GameBoard
         {
             char[] line = board[i];
 
-            System.out.print(String.format("%02d", i) + "|" + "g" + "|");
+            System.out.print(String.format("%02d", i) + "|" + "gr" + "|");
 
             for(char cell : line) 
             {
+                System.out.print(cell);
                 System.out.print(cell);
                 
                 System.out.print('|');
             }
 
-            System.out.println("y" + "|" + String.format("%02d", i));
+            System.out.println("yl" + "|" + String.format("%02d", i));
         }
 
-        System.out.print("  ");
+        System.out.print("     ");
 
         for(int i = 0; i < GameBoard.getBoardSize(); i++)
-            System.out.print("|" + "b");
+            System.out.print("|" + "rd");
 
         System.out.println('|');
         System.out.println(header1);
