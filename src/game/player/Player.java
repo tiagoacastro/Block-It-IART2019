@@ -6,7 +6,7 @@ import game.Node;
 
 import java.util.ArrayList;
 
-public abstract class Player
+public class Player
 {
     protected static int MAX_BARRIERS;
     protected static GameNode node;
@@ -16,15 +16,19 @@ public abstract class Player
     protected int difficulty;
     protected char color;
 
-    public Player(int difficulty)
+    public Player(int difficulty, int[] postion, char color)
     {
-        this.position = new int[2];
+        this.position = postion;
         this.barriers = MAX_BARRIERS;
         this.difficulty = difficulty;
+        this.color = color;
     }
 
-    public abstract boolean isWinner();
-    public abstract int getDistanceToBorder();
+    //Bot function
+    public void play()
+    {
+
+    }
 
     public boolean move(String move)
     {
@@ -62,7 +66,67 @@ public abstract class Player
             return false;
     }
 
-    public abstract boolean useBarrier(String coords);
+    public boolean useBarrier(String coords)
+    {
+        String[] params = coords.split(",");
+
+        if(params.length != 3)
+            return false;
+
+        GameBoard newBoard = node.getGameBoard().placeBarrier(Integer.parseInt(params[0]), 
+            Integer.parseInt(params[1]), params[2].charAt(0));
+
+        if(newBoard != null)
+        {
+            node.setGameBoard(newBoard);
+            barriers--;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean isWinner()
+    {
+        switch(color)
+        {
+            case 'R':
+                return position[0] == GameBoard.getBoardSize() - 1;
+
+            case 'B':
+                return position[0] == 0;
+
+            case 'G':
+                return position[1] == 0;
+
+            case 'Y':
+                return position[1] == GameBoard.getBoardSize() - 1;
+
+            default:
+                return false;
+        }
+    }
+
+    public String getName()
+    {
+        switch(color)
+        {
+            case 'R':
+                return "Red";
+                
+            case 'Y':
+                return "Yellow";
+
+            case 'B':
+                return "Blue";
+
+            case 'G':
+                return "Green";
+
+            default:
+                return "Unknown";
+        }
+    }
 
     public int getDifficulty()
     {

@@ -46,7 +46,7 @@ public class GameBoard
         {
             int[] newcoords = coords.clone();
 
-            newcoords[1] += 1;
+            newcoords[1] += 2;
 
             newBoard[coords[0]][coords[1]] = '_'; // Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; // Switch place
@@ -65,7 +65,8 @@ public class GameBoard
      */
     public boolean validateMoveRight(int[] coords)
     {
-        return coords[1] < board[0].length - 1 && this.board[coords[0]][coords[1] + 2] == '_';
+        return coords[1] < board[0].length - 1 && this.board[coords[0]][coords[1] + 2] == '_'
+            && board[coords[0]][coords[1] + 1] == ' ';
     }
 
     /**
@@ -85,7 +86,7 @@ public class GameBoard
         else
         {
             int[] newcoords = coords.clone();
-            newcoords[1] -= 1;
+            newcoords[1] -= 2;
 
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
@@ -104,7 +105,8 @@ public class GameBoard
      */
     public boolean validateMoveLeft(int[] coords)
     {
-        return coords[1] > 0 && this.board[coords[0]][coords[1] - 2] == '_';
+        return coords[1] > 0 && this.board[coords[0]][coords[1] - 2] == '_'
+            && board[coords[0]][coords[1] - 1] == ' ';
     }
 
     /**
@@ -124,7 +126,7 @@ public class GameBoard
         else
         {
             int[] newcoords = coords.clone();
-            newcoords[0] -= 1;
+            newcoords[0] -= 2;
 
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
@@ -143,7 +145,8 @@ public class GameBoard
      */
     public boolean validateMoveUp(int[] coords)
     {
-        return coords[0] > 0 && this.board[coords[0] - 2][coords[1]] == '_';
+        return coords[0] > 0 && this.board[coords[0] - 2][coords[1]] == '_' 
+            && board[coords[0] - 1][coords[1]] == ' ';
     }
 
     /**
@@ -163,7 +166,7 @@ public class GameBoard
         else
         {
             int[] newcoords = coords.clone();
-            newcoords[0] += 1;
+            newcoords[0] += 2;
 
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
@@ -182,7 +185,73 @@ public class GameBoard
      */
     public boolean validateMoveDown(int[] coords)
     {
-        return coords[0] < this.board.length && this.board[coords[0] + 2][coords[1]] == '_';
+        return coords[0] < this.board.length && this.board[coords[0] + 2][coords[1]] == '_' 
+            && board[coords[0] + 1][coords[1]] == ' ';
+    }
+
+    public GameBoard placeBarrier(int x, int y, char direction)
+    {
+        GameBoard newBoard;
+
+        switch(direction)
+        {
+            case 'h':
+                newBoard = placeHorizontalBarrier(x, y);
+                break;
+
+            case 'v':
+                newBoard = placeVerticalBarrier(x, y);
+                break;
+
+            default:
+                System.out.println("Invalid direction for column placement: " + direction);
+                return null;
+        }
+
+        if(newBoard == null)
+            System.out.println("Couldn't place a barrier there");
+
+        return newBoard;
+    }
+
+    public GameBoard placeVerticalBarrier(int x, int y)
+    {
+        if(x % 2 == 0 || y == 0 || y == BOARD_SIZE - 1 || board[y - 1][x] != ' ' || board[y + 1][x] != ' ')
+            return null;
+
+        if(y - 2 >= 0 && board[y - 2][x] != ' ')
+            return null;
+
+        if(y + 2 < BOARD_SIZE && board[y + 2][x] != ' ')
+            return null;
+        
+        char[][] newBoard = copyBoard(board);
+
+        newBoard[y][x] = 'X';
+        newBoard[y - 1][x] = 'X';
+        newBoard[y + 1][x] = 'X';
+
+        return new GameBoard(newBoard);
+    }
+
+    public GameBoard placeHorizontalBarrier(int x, int y)
+    {
+        if(y % 2 == 0 || x == 0 || x == BOARD_SIZE - 1 || board[y][x - 1] != ' ' || board[y][x + 1] != ' ')
+            return null;
+
+        if(x - 2 >= 0 && board[y][x - 2] != ' ')
+            return null;
+
+        if(x + 2 < BOARD_SIZE && board[y][x + 2] != ' ')
+            return null;
+
+        char[][] newBoard = copyBoard(board);
+
+        newBoard[y][x] = 'X';
+        newBoard[y][x - 1] = 'X';
+        newBoard[y][x + 1] = 'X';
+
+        return new GameBoard(newBoard);
     }
 
     /**

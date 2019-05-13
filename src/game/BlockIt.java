@@ -25,55 +25,66 @@ public class BlockIt
 
     public static void play()
     {
-        for(Player player: players)
+        Player.getBoard().printBoard();
+        
+        do
         {
-            System.out.println(player.getColor() + " Player's turn");
-
-            if(player.getDifficulty() == 1) //Human
+            for(Player player: players)
             {
-                int option;
-
-                System.out.println
-                (
-                    "+----------+-------------------+\n" +
-                    "| 1 - Move | 2 - Place Barrier |\n" +
-                    "+----------+-------------------+\n"
-                );
-
-                option = getOption(2);
-
-                boolean validPlay;
-
-                switch(option)
+                System.out.println(player.getName() + " Player's turn");
+    
+                if(player.getDifficulty() == 1) //Human
                 {
-                    case 1:
-                        System.out.println("Type the direction in which you wish to move (up, down, left or right)");
-                        
-                        do
-                        {
-                            validPlay = player.move(scanner.nextLine());
-                        }
-                        while(!validPlay);
+                    int option;
+    
+                    System.out.println
+                    (
+                        "+----------+-------------------+\n" +
+                        "| 1 - Move | 2 - Place Barrier |\n" +
+                        "+----------+-------------------+\n"
+                    );
+    
+                    option = getOption(2);
+    
+                    boolean validPlay;
+    
+                    switch(option)
+                    {
+                        case 1:
+                            System.out.println("Type the direction in which you wish to move (up, down, left or right)");
+                            scanner.nextLine();
+                            
+                            do
+                            {
+                                validPlay = player.move(scanner.nextLine());
+                            }
+                            while(!validPlay);
+    
+                            break;
+    
+                        case 2:
+                            System.out.println("Type the coordinates of the central piece of the barrier in the format x,y,d (no spaces), with d being the direction (h for horizontal and v for vertical)");
+                            
+                            do
+                            {
+                                validPlay = player.useBarrier(scanner.nextLine());
+                            }
+                            while(!validPlay);       
+                    }
+                }
+                else //Bot
+                    player.play();
+    
+                Player.getBoard().printBoard();
 
-                        break;
-
-                    case 2:
-                        System.out.println("Type the coordinates of the central piece of the barrier in the format x,y (no spaces)");
-                        
-                        do
-                        {
-                            validPlay = player.useBarrier(scanner.nextLine());
-                        }
-                        while(!validPlay);       
+                if(player.isWinner())
+                {
+                    System.out.println("\n" + player.getName() + "Player's Victory!");
+                    return;
                 }
             }
-            else //Bot
-            {
-                
-            }
-
-            Player.getBoard().printBoard();
         }
+        while(true);
     }
 
     public static void buildBoard()
@@ -180,19 +191,21 @@ public class BlockIt
                     switch(i)
                     {
                         case 1:
-                            players.add(new RedPlayer(option - 1));
+                            players.add(new Player(option - 1, new int[]{0, (GameBoard.getBoardSize() - 1) / 2}, 'R'));
                             break;
 
                         case 2:
-                            players.add(new GreenPlayer(option - 1));
+                            players.add(new Player(option - 1, 
+                                new int[]{(GameBoard.getBoardSize() - 1) / 2,  GameBoard.getBoardSize() - 1}, 'G'));
                             break;
 
                         case 3:
-                            players.add(new BluePlayer(option - 1));
+                            players.add(new Player(option - 1, 
+                                new int[]{ GameBoard.getBoardSize() - 1, ( GameBoard.getBoardSize() - 1) / 2}, 'B'));
                             break;
 
                         case 4:
-                            players.add(new YellowPlayer(option - 1));
+                            players.add(new Player(option - 1, new int[]{( GameBoard.getBoardSize() - 1) / 2, 0} ,'Y'));
                             break;
                     }
 
