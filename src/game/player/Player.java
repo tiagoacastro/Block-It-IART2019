@@ -91,9 +91,19 @@ public abstract class Player
         return node.getGameBoard();
     }
 
+    public static GameNode getNode()
+    {
+        return node;
+    }
+
     public static void setMaxBarriers(int maxBarriers)
     {
         MAX_BARRIERS = maxBarriers;
+    }
+
+    public static void setNode(GameNode node)
+    {
+        Player.node = node;
     }
 
     public static void setBoard(GameBoard gameBoard)
