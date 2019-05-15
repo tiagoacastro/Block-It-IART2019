@@ -2,7 +2,7 @@ package game;
 
 import java.util.Scanner;
 
-import game.player.*;
+import game.node.GameNode;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -11,14 +11,15 @@ public class BlockIt
 {
     private static ArrayList<Player> players;
     private static Scanner scanner;
+    private static int currentPlayer;
 
     public static void main(String[] args) throws Exception 
     {
         Player.setMaxBarriers(5);
-        
         GameBoard.setBoardSize(17);
         scanner = new Scanner(System.in);
         players = new ArrayList<Player>();
+        currentPlayer = 0;
 
         mainMenu();
     }
@@ -29,8 +30,12 @@ public class BlockIt
         
         do
         {
-            for(Player player: players)
+            currentPlayer = 0;
+
+            for(; currentPlayer < players.size(); currentPlayer++)
             {
+                Player player = players.get(currentPlayer);
+
                 System.out.println(player.getName() + " Player's turn");
     
                 if(player.getDifficulty() == 1) //Human
@@ -106,7 +111,7 @@ public class BlockIt
             charBoard[player.getPosition()[0]][player.getPosition()[1]] = player.getColor();
 
         if(Player.getNode() == null)
-            Player.setNode(new GameNode(null, 0, 0, "root", 1, 0, new GameBoard(charBoard)));
+            Player.setNode(new GameNode(null, 0, 0, "root", 1, new GameBoard(charBoard)));
         else
             Player.setBoard(new GameBoard(charBoard));
     }
@@ -385,5 +390,10 @@ public class BlockIt
         }
 
         return option;
+    }
+
+    public static Player getCurrentPlayer()
+    {
+        return players.get(currentPlayer);
     }
 }

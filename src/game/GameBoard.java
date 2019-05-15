@@ -206,10 +206,7 @@ public class GameBoard
             default:
                 System.out.println("Invalid direction for column placement: " + direction);
                 return null;
-        }
-
-        if(newBoard == null)
-            System.out.println("Couldn't place a barrier there");
+        }            
 
         return newBoard;
     }
@@ -219,10 +216,10 @@ public class GameBoard
         if(x % 2 == 0 || y == 0 || y == BOARD_SIZE - 1 || board[y - 1][x] != ' ' || board[y + 1][x] != ' ')
             return null;
 
-        if(y - 2 >= 0 && board[y - 2][x] != ' ')
+        if(x > 0 && board[y][x - 1] != ' ')
             return null;
 
-        if(y + 2 < BOARD_SIZE && board[y + 2][x] != ' ')
+        if(x < BOARD_SIZE - 1 && board[y][x + 1] != ' ')
             return null;
         
         char[][] newBoard = copyBoard(board);
@@ -239,10 +236,10 @@ public class GameBoard
         if(y % 2 == 0 || x == 0 || x == BOARD_SIZE - 1 || board[y][x - 1] != ' ' || board[y][x + 1] != ' ')
             return null;
 
-        if(x - 2 >= 0 && board[y][x - 2] != ' ')
+        if(y > 0 && board[y - 1][x] != ' ')
             return null;
 
-        if(x + 2 < BOARD_SIZE && board[y][x + 2] != ' ')
+        if(y < BOARD_SIZE - 1 && board[y + 1][x] != ' ')
             return null;
 
         char[][] newBoard = copyBoard(board);

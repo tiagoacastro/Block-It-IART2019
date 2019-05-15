@@ -1,6 +1,10 @@
-package game;
+package game.node;
 
 import java.util.ArrayList;
+
+import game.BlockIt;
+import game.GameBoard;
+import game.Player;
 
 /**
  * Represents an instance of a node in a search graph of a solution for a level in the game.
@@ -11,11 +15,6 @@ public class GameNode extends Node
      * The state of the board in this node.
      */
     private GameBoard board;
-
-    /**
-     * The number of moves performed to get to this node.
-     */
-    private int moves;
 
     /**
      * The number of nodes analyzed in the graph.
@@ -34,12 +33,11 @@ public class GameNode extends Node
      * @param board The state of the board in this node.
      */
     public GameNode(Node parentNode, int depth, int pathCost, String operator,  
-        int searchOption, int moves, GameBoard board)
+        int searchOption, GameBoard board)
     {
         super(parentNode, depth, pathCost, operator, searchOption);
 
         this.board = board;
-        this.moves = moves;
     }
 
     /**
@@ -50,13 +48,11 @@ public class GameNode extends Node
      * @param moves The number of mobes performed to get to this node.
      * @param board The state of the board in this node.
      */
-    private GameNode(Node parentNode, String operator, int moves, GameBoard board)
+    private GameNode(Node parentNode, String operator, GameBoard board)
     {
         super(parentNode, operator);
 
         this.board = board;
-        this.moves = moves;
-        
     }
 
     /**
@@ -65,59 +61,41 @@ public class GameNode extends Node
      */
     public ArrayList<Node> expandNode()
     {
-        ArrayList<Node> nodeList = new ArrayList<>();
-        char[][] board = getBoard();
-        char piece;
-        int[] coords = new int[2];
+        ArrayList<Node> nodeList = new ArrayList<Node>();
+        char[][] currentBoard = board.getBoard();
+        int[] currentPlayerCoords = BlockIt.getCurrentPlayer().getPosition();
+
+        if(this.board.validateMoveDown(currentPlayerCoords))
+            nodeList.add(new GameNode(this,  "move down " + currentPlayerCoords[0] + " " 
+                + currentPlayerCoords[1], this.board.moveDown(currentPlayerCoords)));
+
+        if(this.board.validateMoveUp(currentPlayerCoords))
+            nodeList.add(new GameNode(this,  "move up " + currentPlayerCoords[0] + " " 
+                + currentPlayerCoords[1], this.board.moveUp(currentPlayerCoords)));  
+
+        if(this.board.validateMoveLeft(currentPlayerCoords))
+            nodeList.add(new GameNode(this,  "move left " + currentPlayerCoords[0] + " " 
+                + currentPlayerCoords[1], this.board.moveLeft(currentPlayerCoords)));    
+
+        if(this.board.validateMoveRight(currentPlayerCoords))
+            nodeList.add(new GameNode(this,  "move right " + currentPlayerCoords[0] + " " 
+                + currentPlayerCoords[1], this.board.moveRight(currentPlayerCoords))); 
+
+        GameBoard newBoard;
+
+        for(int i = 0; i < currentBoard.length; i++)
+            for(int j = 0; j < currentBoard[i].length; j++)
+            {
+                if(i % 2 != 0)
+                    if((newBoard = board.placeBarrier(j, i, 'h')) != null)
+                        nodeList.add(new GameNode(this, "barrier h " + i + " " + j, newBoard));
+
+                if(j % 2 != 0)
+                    if((newBoard = board.placeBarrier(j, i, 'v')) != null)
+                        nodeList.add(new GameNode(this, "barrier v " + i + " " + j, newBoard));
+            }
 
         return nodeList;
-    }
-
-    /**
-     * Moves a piece in the board.
-     * @param direction The direction in which to move the piece.
-     * @param coords The coordinates of the piece.
-     * @return A new node representing the board if the move was succesfull or null if not. 
-     */
-    private GameNode move(String direction, int[] coords)
-    {
-        GameBoard newBoard ;
-        String op;
-        
-        if(board.testCoords(coords))
-        {
-            System.out.println("Invalid piece in move " + direction);
-            return null;
-        }
-
-        switch(direction)
-        {
-            case "left":
-                newBoard = board.moveLeft(coords);
-                op = "Move left ";
-                break;
-
-            case "right":
-                newBoard = board.moveRight(coords);
-                op = "Move Right";
-                break;
-
-            case "up":
-                newBoard = board.moveUp(coords);
-                op = "Move Up";
-                break;
-
-            case "down":
-                newBoard = board.moveDown(coords);
-                op = "Move Down";
-                break;
-
-            default:
-                System.out.println("Invalid move direction: " + direction);
-                return null;
-        }
-
-        return new GameNode(this, op, this.moves + 1, newBoard);
     }
 
     /**
@@ -152,8 +130,9 @@ public class GameNode extends Node
 
             try 
             {
+                /*
                 if (op.equals("move"))
-                    this.board = this.move(direction, coords).getGameBoard();
+                    this.board = board.move(direction, coords).getGameBoard(); */
                 //else put barrier
             } 
             catch(NullPointerException e)

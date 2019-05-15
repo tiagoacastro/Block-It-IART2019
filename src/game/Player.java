@@ -1,8 +1,7 @@
-package game.player;
+package game;
 
 import game.GameBoard;
-import game.GameNode;
-import game.Node;
+import game.node.*;
 
 import java.util.ArrayList;
 
@@ -83,7 +82,11 @@ public class Player
             return true;
         }
         else
+        {
+            System.out.println("Couldn't place a barrier there");
             return false;
+        }
+            
     }
 
     public boolean isWinner()

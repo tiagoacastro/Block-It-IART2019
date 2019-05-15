@@ -1,5 +1,7 @@
-package game;
+package game.node;
+
 import java.util.ArrayList;
+import game.GameBoard;
 
 /**
  * Represents a regular node in a search problem.
@@ -9,28 +11,28 @@ public abstract class Node
     /**
      * The parent node of this node.
      */
-    Node parentNode;
+    protected Node parentNode;
 
     /**
      * The depth at which this node is at.
      */
-    int depth;
+    protected int depth;
 
     /**
      * The path cost to reach this node (always 1 since from one depth level to the other all possible plays
      * exhaust 1 move)
      */
-    private int pathCost;
+    protected int pathCost;
 
     /**
      * The type of search being performed.
      */
-    private int searchOption;
+    protected int searchOption;
 
     /**
      * This node's operator.
      */
-    String operator;
+    protected String operator;
 
     /**
      * List containing the solution to a level in order.
@@ -85,8 +87,6 @@ public abstract class Node
      */
     public abstract ArrayList<Node> expandNode();
 
-    public abstract GameBoard getGameBoard();
-
     /**
      * Executes the moves indicated by the operators in the Solution array.
      */
@@ -130,5 +130,20 @@ public abstract class Node
     public int getSearchOption()
     {
         return searchOption;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public int getPathCost()
+    {
+        return pathCost;
+    }
+
+    public void setPathCost(int cost)
+    {
+        this.pathCost = cost;
     }
 }
