@@ -2,6 +2,7 @@ package game;
 
 import game.GameBoard;
 import game.node.*;
+import java.util.PriorityQueue;
 
 import java.util.ArrayList;
 
@@ -15,9 +16,9 @@ public class Player
     protected int difficulty;
     protected char color;
 
-    public Player(int difficulty, int[] postion, char color)
+    public Player(int difficulty, int[] position, char color)
     {
-        this.position = postion;
+        this.position = position;
         this.barriers = MAX_BARRIERS;
         this.difficulty = difficulty;
         this.color = color;
@@ -26,7 +27,10 @@ public class Player
     //Bot function
     public void play()
     {
+        System.out.println(this.getDistanceFromBorder(color));
 
+        for(int i = 0; i < Node.getSolution().size(); i++)
+            System.out.println(Node.getSolution().get(i));
     }
 
     public boolean move(String move)
@@ -89,21 +93,89 @@ public class Player
             
     }
 
+    public int getDistanceFromBorder(char compColor)
+    {
+        PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<PlayerNode>(); 
+        ArrayList<PlayerNode> children = new ArrayList<PlayerNode>();
+        ArrayList<String> visitedNodes = new ArrayList<String>();
+        PlayerNode currentNode;
+        boolean active = false, visited = false;
+
+        Node.getSolution().clear();
+        Node.getSolution().trimToSize();
+
+        activeNodes.add(new PlayerNode(node, node.getPlayerPosition(compColor), compColor));
+
+        while (!activeNodes.isEmpty()) 
+        {
+            currentNode = activeNodes.peek();
+
+            if(Player.isWinner(currentNode.getColor(), currentNode.getPosition()))
+            {
+                currentNode.traceSolutionUp();
+                return Node.getSolution().size();
+            } 
+                
+            
+            activeNodes.poll();
+            visitedNodes.add(currentNode.getId());
+
+            children = currentNode.expandPlayerNode();
+
+            for (Node child : children) 
+            {
+                for (String id : visitedNodes)
+                    if (id.equals(child.getId())) 
+                    {
+                        visited = true;
+                        break;
+                    }
+
+                if (visited) 
+                {
+                    visited = false;
+                    continue;
+                }
+
+                for (Node n : activeNodes)
+                    if (n.getId().equals(child.getId())) {
+                        active = true;
+                        break;
+                    }
+
+                if (!active)
+                    activeNodes.add((PlayerNode) child);
+
+                active = false;
+            }
+        }
+
+        children.clear();
+        children.trimToSize();
+
+        return -1;
+    }
+
     public boolean isWinner()
     {
-        switch(color)
+        return isWinner(this.color, this.position);
+    }
+
+    public static boolean isWinner(char playerColor, int[] playerPosition)
+    {
+        switch(playerColor)
         {
             case 'R':
-                return position[0] == GameBoard.getBoardSize() - 1;
+                return playerPosition[0] == GameBoard.getBoardSize() - 1;
 
             case 'B':
-                return position[0] == 0;
+                return playerPosition[0] == 0;
 
             case 'G':
-                return position[1] == 0;
+                return playerPosition[1] == 0;
 
             case 'Y':
-                return position[1] == GameBoard.getBoardSize() - 1;
+                return playerPosition[1] == GameBoard.getBoardSize() - 1;
 
             default:
                 return false;

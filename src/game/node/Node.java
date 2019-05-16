@@ -1,7 +1,6 @@
 package game.node;
 
 import java.util.ArrayList;
-import game.GameBoard;
 
 /**
  * Represents a regular node in a search problem.
@@ -37,7 +36,7 @@ public abstract class Node
     /**
      * List containing the solution to a level in order.
      */
-    protected static ArrayList<String> solution = new ArrayList<>();
+    protected static ArrayList<String> solution = new ArrayList<String>();
 
     protected String id;
 
@@ -50,7 +49,7 @@ public abstract class Node
      * @param searchOption This node's search option.
      * @param heuristic This node's heuristic.
      */
-    Node(Node parentNode, int depth, int pathCost, String operator, int searchOption)
+    public Node(Node parentNode, int depth, int pathCost, String operator, int searchOption)
     {
         this.parentNode = parentNode;
         this.depth = depth;
@@ -70,7 +69,7 @@ public abstract class Node
      * @param parentNode The parent node of this node.
      * @param operator This node's operator.
      */
-    Node(Node parentNode, String operator)
+    public Node(Node parentNode, String operator)
     {
         this.depth = parentNode.depth + 1;
         this.pathCost = 1;
@@ -95,7 +94,14 @@ public abstract class Node
     /**
      * Adds the correspondent node's operators to the Solution array all the way from the final/acceptance node.
      */
-    public abstract void traceSolutionUp();
+    public void traceSolutionUp()
+    {
+        if(!operator.equals("root"))
+        {
+            solution.add(0, operator);
+            parentNode.traceSolutionUp();
+        }
+    }
 
     /**
      * Retrieves the depth.
@@ -140,6 +146,16 @@ public abstract class Node
     public int getPathCost()
     {
         return pathCost;
+    }
+
+    public Node getParentNode()
+    {
+        return parentNode;
+    }
+
+    public String getOperator()
+    {
+        return operator;
     }
 
     public void setPathCost(int cost)

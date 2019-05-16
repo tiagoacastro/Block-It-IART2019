@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import game.BlockIt;
 import game.GameBoard;
-import game.Player;
 
 /**
  * Represents an instance of a node in a search graph of a solution for a level in the game.
@@ -14,12 +13,12 @@ public class GameNode extends Node
     /**
      * The state of the board in this node.
      */
-    private GameBoard board;
+    protected GameBoard board;
 
     /**
      * The number of nodes analyzed in the graph.
      */
-    public static int analyzedNodes = 0;
+    protected static int analyzedNodes = 0;
 
     /**
      * Constructor of the class with most members.
@@ -48,7 +47,7 @@ public class GameNode extends Node
      * @param moves The number of mobes performed to get to this node.
      * @param board The state of the board in this node.
      */
-    private GameNode(Node parentNode, String operator, GameBoard board)
+    public GameNode(Node parentNode, String operator, GameBoard board)
     {
         super(parentNode, operator);
 
@@ -62,7 +61,6 @@ public class GameNode extends Node
     public ArrayList<Node> expandNode()
     {
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        char[][] currentBoard = board.getBoard();
         int[] currentPlayerCoords = BlockIt.getCurrentPlayer().getPosition();
 
         if(this.board.validateMoveDown(currentPlayerCoords))
@@ -81,6 +79,18 @@ public class GameNode extends Node
             nodeList.add(new GameNode(this,  "move right " + currentPlayerCoords[0] + " " 
                 + currentPlayerCoords[1], this.board.moveRight(currentPlayerCoords))); 
 
+        return nodeList;
+    }
+
+    /**
+     * Expands a node, i.e, returns its possible children, including barrier placements.
+     * @return The children of this node.
+     */
+    public ArrayList<Node> expandNodeWithBarrier()
+    {
+        ArrayList<Node> nodeList = expandNode();
+        char[][] currentBoard = board.getBoard();
+
         GameBoard newBoard;
 
         for(int i = 0; i < currentBoard.length; i++)
@@ -96,6 +106,18 @@ public class GameNode extends Node
             }
 
         return nodeList;
+    }
+
+    public int[] getPlayerPosition(char color)
+    {
+        char[][] charBoard = board.getBoard();
+
+        for(int i = 0; i < charBoard.length; i++)
+            for(int j = 0; j < charBoard[i].length; j++)
+                if(charBoard[i][j] == color)
+                    return new int[] {i, j};
+
+        return new int[] {-1};
     }
 
     /**
@@ -144,18 +166,6 @@ public class GameNode extends Node
     }
 
     /**
-     * Adds the correspondent node's operators to the Solution array all the way from the final/acceptance node.
-     */
-    public void traceSolutionUp()
-    {
-        if(!operator.equals("root"))
-        {
-            solution.add(0, operator);
-            parentNode.traceSolutionUp();
-        }
-    }
-
-    /**
      * Prints the current board.
      */
     public void printBoard()
@@ -176,7 +186,7 @@ public class GameNode extends Node
      * Retrieves the matrix instance of the board.
      * @return The matrix representing the actual board.
      */
-    private char[][] getBoard()
+    public char[][] getBoard()
     {
         return board.getBoard();
     }

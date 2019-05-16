@@ -15,6 +15,11 @@ public class BlockIt
 
     public static void main(String[] args) throws Exception 
     {
+        new BlockIt();
+    }
+
+    public BlockIt()
+    {
         Player.setMaxBarriers(5);
         GameBoard.setBoardSize(17);
         scanner = new Scanner(System.in);
@@ -395,5 +400,10 @@ public class BlockIt
     public static Player getCurrentPlayer()
     {
         return players.get(currentPlayer);
+    }
+
+    public static ArrayList<Player> getPlayers()
+    {
+        return players;
     }
 }

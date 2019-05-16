@@ -65,7 +65,7 @@ public class GameBoard
      */
     public boolean validateMoveRight(int[] coords)
     {
-        return coords[1] < board[0].length - 1 && this.board[coords[0]][coords[1] + 2] == '_'
+        return coords[1] < board[0].length - 2 && this.board[coords[0]][coords[1] + 2] == '_'
             && board[coords[0]][coords[1] + 1] == ' ';
     }
 
@@ -105,7 +105,7 @@ public class GameBoard
      */
     public boolean validateMoveLeft(int[] coords)
     {
-        return coords[1] > 0 && this.board[coords[0]][coords[1] - 2] == '_'
+        return coords[1] > 1 && this.board[coords[0]][coords[1] - 2] == '_'
             && board[coords[0]][coords[1] - 1] == ' ';
     }
 
@@ -145,7 +145,7 @@ public class GameBoard
      */
     public boolean validateMoveUp(int[] coords)
     {
-        return coords[0] > 0 && this.board[coords[0] - 2][coords[1]] == '_' 
+        return coords[0] > 1 && this.board[coords[0] - 2][coords[1]] == '_' 
             && board[coords[0] - 1][coords[1]] == ' ';
     }
 
@@ -185,7 +185,7 @@ public class GameBoard
      */
     public boolean validateMoveDown(int[] coords)
     {
-        return coords[0] < this.board.length && this.board[coords[0] + 2][coords[1]] == '_' 
+        return coords[0] < this.board.length - 2 && this.board[coords[0] + 2][coords[1]] == '_' 
             && board[coords[0] + 1][coords[1]] == ' ';
     }
 
