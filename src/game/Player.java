@@ -36,23 +36,28 @@ public class Player
     public boolean move(String move)
     {
         GameBoard newBoard;
+        int[] newPosition = position.clone();
 
         switch(move)
         {
             case "up":
                 newBoard = node.getGameBoard().moveUp(position);
+                newPosition[0] -= 2;
                 break;
 
             case "down":
                 newBoard = node.getGameBoard().moveDown(position);
+                newPosition[0] += 2;
                 break;
 
             case "left":    
                 newBoard = node.getGameBoard().moveLeft(position);
+                newPosition[1] -= 2;
                 break;
 
             case "right":
                 newBoard = node.getGameBoard().moveRight(position);
+                newPosition[1] += 2;
                 break;
 
             default:
@@ -63,6 +68,7 @@ public class Player
         if(newBoard != null)
         {
             node.setGameBoard(newBoard);
+            this.position = newPosition;
             return true;
         }
         else
