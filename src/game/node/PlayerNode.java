@@ -1,7 +1,8 @@
-package game;
+package game.node;
 
-import game.node.*;
+import game.GameBoard;
 import java.util.ArrayList;
+
 
 public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 {
