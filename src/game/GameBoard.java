@@ -7,10 +7,16 @@ import java.util.concurrent.TimeUnit;
 public class GameBoard
 {
     private static int BOARD_SIZE;
+
     /**
      * The actual board.
      */
     private char[][] board;
+
+    /**
+     * Player position, order : R, G, B, Y.
+     */
+    private int[][] players;
 
     /**
      * Flag indicating if the moves performed are to be displayed.
@@ -20,12 +26,11 @@ public class GameBoard
     /**
      * Constructor of the class.
      * @param board The board matrix.
-     * @param maxMoves The maximum number of moves allowed.
-     * @param optimalMoves The optimal number of moves.
      */
-    public GameBoard(char[][] board)
+    public GameBoard(char[][] board, int[][] players)
     {
         this.board = board;
+        this.players = players;
     }
 
     /**
@@ -36,6 +41,7 @@ public class GameBoard
     public GameBoard moveRight(int[] coords)
     {
         char[][] newBoard = copyBoard(this.board);
+        int[][] newPlayers = players.clone();
 
         if (!validateMoveRight(coords)) 
         {
@@ -51,11 +57,13 @@ public class GameBoard
             newBoard[coords[0]][coords[1]] = '_'; // Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; // Switch place
 
+            updatePlayercoords(board[coords[0]][coords[1]], newPlayers, newcoords);
+
             if(showMove)
                 printBoard(newBoard);        
         }
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, newPlayers);
     }
 
     /**
@@ -77,6 +85,7 @@ public class GameBoard
     public GameBoard moveLeft(int[] coords)
     {
         char[][] newBoard = copyBoard(this.board);
+        int[][] newPlayers = players.clone();
 
         if(!validateMoveLeft(coords))
         {
@@ -91,11 +100,13 @@ public class GameBoard
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
+            updatePlayercoords(board[coords[0]][coords[1]], newPlayers, newcoords);
+
             if(showMove)
                 printBoard(newBoard);                
         }
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, newPlayers);
     }
 
     /**
@@ -117,6 +128,7 @@ public class GameBoard
     public GameBoard moveUp(int[] coords)
     {
         char[][] newBoard = copyBoard(this.board);
+        int[][] newPlayers = players.clone();
 
         if(!validateMoveUp(coords))
         {
@@ -131,11 +143,13 @@ public class GameBoard
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
+            updatePlayercoords(board[coords[0]][coords[1]], newPlayers, newcoords);
+
             if(showMove)
                 printBoard(newBoard);                
         }
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, newPlayers);
     }
 
     /**
@@ -157,6 +171,7 @@ public class GameBoard
     public GameBoard moveDown(int[] coords)
     {
         char[][] newBoard = copyBoard(this.board);
+        int[][] newPlayers = players.clone();
 
         if(!validateMoveDown(coords))
         {
@@ -171,11 +186,31 @@ public class GameBoard
             newBoard[coords[0]][coords[1]] = '_'; //Old position
             newBoard[newcoords[0]][newcoords[1]] = board[coords[0]][coords[1]]; //Switch place
 
+            updatePlayercoords(board[coords[0]][coords[1]], newPlayers, newcoords);
+
             if(showMove)
                 printBoard(newBoard);               
         }
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, newPlayers);
+    }
+
+    private void updatePlayercoords(char c, int[][] newPlayers, int[] newcoords) {
+        switch(c)
+        {
+            case 'R':
+                newPlayers[0] = newcoords.clone();
+                break;
+            case 'G':
+                newPlayers[1] = newcoords.clone();
+                break;
+            case 'B':
+                newPlayers[2] = newcoords.clone();
+                break;
+            case 'Y':
+                newPlayers[3] = newcoords.clone();
+                break;
+        }
     }
 
     /**
@@ -228,7 +263,7 @@ public class GameBoard
         newBoard[y - 1][x] = 'X';
         newBoard[y + 1][x] = 'X';
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, players);
     }
 
     public GameBoard placeHorizontalBarrier(int x, int y)
@@ -248,7 +283,7 @@ public class GameBoard
         newBoard[y][x - 1] = 'X';
         newBoard[y][x + 1] = 'X';
 
-        return new GameBoard(newBoard);
+        return new GameBoard(newBoard, players);
     }
 
     /**
@@ -393,5 +428,9 @@ public class GameBoard
     public static void setBoardSize(int boardSize)
     {
         BOARD_SIZE = boardSize;
+    }
+
+    public int[][] getPlayers() {
+        return players;
     }
 }
