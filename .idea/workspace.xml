@@ -15,8 +15,8 @@
       <file leaf-file-name="Heuristic.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/Heuristics/Heuristic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="16" column="7" lean-forward="true" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
+            <state relative-caret-position="668">
+              <caret line="74" column="0" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -24,21 +24,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DirectHeuristic.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DirectHeuristic.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/game/Heuristics/DirectHeuristic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="261">
-              <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+            <state relative-caret-position="411">
+              <caret line="23" column="44" lean-forward="false" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CompetitiveHeuristic.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CompetitiveHeuristic.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/Heuristics/CompetitiveHeuristic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="735">
-              <caret line="35" column="27" lean-forward="true" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
+            <state relative-caret-position="219">
+              <caret line="27" column="29" lean-forward="false" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -132,10 +132,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/game/Heuristics/BlockNumHeuristic.java" />
-        <option value="$PROJECT_DIR$/src/game/Heuristics/Heuristic.java" />
         <option value="$PROJECT_DIR$/src/game/GameBoard.java" />
-        <option value="$PROJECT_DIR$/src/game/Heuristics/DirectHeuristic.java" />
         <option value="$PROJECT_DIR$/src/game/BlockIt.java" />
+        <option value="$PROJECT_DIR$/src/game/Heuristics/Heuristic.java" />
+        <option value="$PROJECT_DIR$/src/game/Heuristics/DirectHeuristic.java" />
         <option value="$PROJECT_DIR$/src/game/Heuristics/CompetitiveHeuristic.java" />
       </list>
     </option>
@@ -359,12 +359,12 @@
       <option name="presentableId" value="Default" />
       <updated>1558113914074</updated>
       <workItem from="1558113925971" duration="3902000" />
-      <workItem from="1558123417878" duration="1318000" />
+      <workItem from="1558123417878" duration="1918000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5220000" />
+    <option name="totallyTimeSpent" value="5820000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1050" extended-state="6" />
@@ -536,26 +536,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game/Heuristics/Heuristic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="16" column="7" lean-forward="true" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
+        <state relative-caret-position="668">
+          <caret line="74" column="0" lean-forward="false" selection-start-line="74" selection-start-column="0" selection-end-line="74" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/Heuristics/DirectHeuristic.java">
+    <entry file="file://$PROJECT_DIR$/src/game/Heuristics/CompetitiveHeuristic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+        <state relative-caret-position="219">
+          <caret line="27" column="29" lean-forward="false" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/Heuristics/CompetitiveHeuristic.java">
+    <entry file="file://$PROJECT_DIR$/src/game/Heuristics/DirectHeuristic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="735">
-          <caret line="35" column="27" lean-forward="true" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
+        <state relative-caret-position="411">
+          <caret line="23" column="44" lean-forward="false" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="44" />
           <folding />
         </state>
       </provider>

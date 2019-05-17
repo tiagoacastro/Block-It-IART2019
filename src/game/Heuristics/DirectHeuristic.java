@@ -13,21 +13,26 @@ public class DirectHeuristic extends Heuristic
        * @param color The color of the player
        */
       public void calculate(GameBoard board, char color) {
-            switch(color)
-            {
-                  case 'R':
-                        this.value = GameBoard.getBoardSize() - board.getPlayers()[0][1];
-                        break;
-                  case 'G':
-                        this.value = board.getPlayers()[1][0];
-                        break;
-                  case 'B':
-                        this.value = board.getPlayers()[2][1];
-                        break;
-                  case 'Y':
-                        this.value = GameBoard.getBoardSize() - board.getPlayers()[3][0];
-                        break;
-            }
+            calculatedistances(board);
+
+            if(otherWin(board, color))
+                  value = Integer.MAX_VALUE;
+            else
+                  switch(color)
+                  {
+                        case 'R':
+                              this.value = r;
+                              break;
+                        case 'G':
+                              this.value = g;
+                              break;
+                        case 'B':
+                              this.value = b;
+                              break;
+                        case 'Y':
+                              this.value = y;
+                              break;
+                  }
       }
 
       /**
