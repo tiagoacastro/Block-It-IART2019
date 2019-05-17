@@ -1,15 +1,14 @@
 package game.Heuristics;
 
 import game.GameBoard;
-import game.Player;
 
 /**
- * Heuristic based on the blocks left
+ * Heuristic based on the distance to the wall
  */
 public class DirectHeuristic extends Heuristic
 {
       /**
-       * Calculates the heuristic's value based on the blocks left on the board.
+       * Calculates the heuristic's value based on the distance to the wall.
        * @param board The board to which the heuristic's value is calculated.
        * @param color The color of the player
        */
