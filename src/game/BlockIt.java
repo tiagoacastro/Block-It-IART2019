@@ -1,5 +1,6 @@
 package game;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 import game.node.GameNode;
@@ -112,13 +113,36 @@ public class BlockIt
                     else
                         charBoard[i][j] = ' ';
 
-        for(Player player: players)
+        int[][] pos = new int[4][2];
+        for(int[] p : pos)
+            Arrays.fill(p, -1);
+
+        for(Player player: players) {
             charBoard[player.getPosition()[0]][player.getPosition()[1]] = player.getColor();
+            switch(player.getColor()){
+                case 'R':
+                    pos[0][0] = player.getPosition()[0];
+                    pos[0][1] = player.getPosition()[1];
+                    break;
+                case 'G':
+                    pos[1][0] = player.getPosition()[0];
+                    pos[1][1] = player.getPosition()[1];
+                    break;
+                case 'B':
+                    pos[2][0] = player.getPosition()[0];
+                    pos[2][1] = player.getPosition()[1];
+                    break;
+                case 'Y':
+                    pos[3][0] = player.getPosition()[0];
+                    pos[3][1] = player.getPosition()[1];
+                    break;
+            }
+        }
 
         if(Player.getNode() == null)
-            Player.setNode(new GameNode(null, 0, 0, "root", 1, new GameBoard(charBoard)));
+            Player.setNode(new GameNode(null, 0, 0, "root", 1, new GameBoard(charBoard, pos)));
         else
-            Player.setBoard(new GameBoard(charBoard));
+            Player.setBoard(new GameBoard(charBoard, pos));
     }
 
     public static void mainMenu()
