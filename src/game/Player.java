@@ -309,7 +309,7 @@ public class Player
                 value = (GameNode) child.max(value, minimax((GameNode) child, depth+1, false));
                 if (isAlphaBeta) {
                     alpha = (GameNode) child.max(alpha, value);
-                    if (Node.ge(alpha, beta)) {
+                    if (alpha.ge(beta)) {
                         break;
                     }
                 }
@@ -321,7 +321,7 @@ public class Player
                 value = (GameNode) child.min(value, minimax((GameNode) child, depth+1, true));
                 if(isAlphaBeta) {
                     beta = (GameNode) child.min(beta, value);
-                    if (Node.ge(alpha, beta)) {
+                    if (alpha.ge(beta)) {
                         break;
                     }
                 } 

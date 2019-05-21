@@ -201,7 +201,7 @@ public abstract class Node
      * @return
      */
 
-    public static boolean ge(Node a, Node b) {
+    public boolean ge(Node b) {
         return this.heuristic.value >= b.heuristic.value;
     }
 
