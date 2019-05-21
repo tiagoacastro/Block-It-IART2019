@@ -193,6 +193,18 @@ public abstract class Node
         return (n.heuristic.value < m.heuristic.value ? n : m);
     }
 
+
+    /**
+     * Checks if the heuristic value of node a is greater than or equal to that of node b
+     * @param a
+     * @param b
+     * @return
+     */
+
+    public static boolean ge(Node a, Node b) {
+        return this.heuristic.value >= b.heuristic.value;
+    }
+
     public String getId()
     {
         return id;
