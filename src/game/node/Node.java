@@ -2,11 +2,20 @@ package game.node;
 
 import java.util.ArrayList;
 
+import game.heuristics.*;
+import game.Player;
+
 /**
  * Represents a regular node in a search problem.
  */
 public abstract class Node
 {
+
+    /**
+     * Determines minimax's max search depth
+     */
+    public static int MAX_SEARCH_DEPTH = 5;
+
     /**
      * The parent node of this node.
      */
@@ -38,6 +47,14 @@ public abstract class Node
      */
     protected static ArrayList<String> solution = new ArrayList<String>();
 
+    /**
+     * Heuristic used to calculate the best path
+     */
+    protected Heuristic heuristic; 
+
+    /**
+     * Id of the node
+     */
     protected String id;
 
     /**
@@ -84,7 +101,7 @@ public abstract class Node
      * Expands a node, i.e, returns its possible children.
      * @return The children of this node.
      */
-    public abstract ArrayList<Node> expandNode();
+    public abstract ArrayList<Node> expandNode(Player player);
 
     /**
      * Executes the moves indicated by the operators in the Solution array.
@@ -136,6 +153,44 @@ public abstract class Node
     public int getSearchOption()
     {
         return searchOption;
+    }
+
+    /**
+     * Determines the greater of two nodes, in regards to the heuristic value
+     * @param n
+     * @param m
+     * @return
+     */
+
+    public Node max(Node n, Node m) {
+        if (n == null) {
+            return m;
+        } 
+
+        if (m == null) {
+            return n;
+        }
+
+        return (n.heuristic.value > m.heuristic.value ? n : m);
+    }
+
+    /**
+     * 
+     * @param n
+     * @param m
+     * @return
+     */
+
+    public Node min(Node n, Node m) {
+        if (n == null) {
+            return m;
+        } 
+
+        if (m == null) {
+            return n;
+        }
+
+        return (n.heuristic.value < m.heuristic.value ? n : m);
     }
 
     public String getId()

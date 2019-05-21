@@ -31,6 +31,8 @@ public class Player
 
         for(int i = 0; i < Node.getSolution().size(); i++)
             System.out.println(Node.getSolution().get(i));
+
+        //node = minimax(node, 0, true);
     }
 
     public boolean move(String move)
@@ -259,44 +261,36 @@ public class Player
         node.setGameBoard(gameBoard);
     }
 
-    // Algorithms: pseudo-code
+    /**
+     * Determines the player bot's next move through the use of the minimax algorithm
+     * @param node
+     * @param depth
+     * @param maximizingPlayer
+     * @return
+     */
 
-    /*
-    function minimax(node, depth, maximizingPlayer) is
-    if depth = 0 or node is a terminal node then
-        return the heuristic value of node
-    if maximizingPlayer then
-        value := −∞
-        for each child of node do
-            value := max(value, minimax(child, depth − 1, FALSE))
-        return value
-    else (* minimizing player *)
-        value := +∞
-        for each child of node do
-            value := min(value, minimax(child, depth − 1, TRUE))
-        return value
-    */
+    public GameNode minimax(GameNode node, int depth, boolean maximizingPlayer) {
 
-    public int minimax(GameNode node, int depth, boolean maximazingPlayer) {
-        if (depth == 0 || node.isTerminal()) {
-            //return the heuristic value of node
+        GameNode value = null;
+
+        if (depth == Node.MAX_SEARCH_DEPTH /*|| node.isTerminal() */) { // todo check search depth and isTerminal
+            node.calculateHeuristic(node.getGameBoard(), color);
+            return node;
         }
 
-        if (maximazingPlayer) {
-            //value = minInfinity
-            ArrayList<Node> childNodes = node.expandNode();
+        if (maximizingPlayer) {
+            ArrayList<Node> childNodes = node.expandNodeWithBarrier(this); 
             for (Node child : childNodes) {
-                //value = max(value, minimax(child, depth − 1, false))
+                value = (GameNode) child.max(value, minimax((GameNode) child, depth+1, false));
             }
-            //return value;
+            return value;
         } else {
-            //value = maxInfinity
-            ArrayList<Node> childNodes = node.expandNode();
+            ArrayList<Node> childNodes = node.expandNodeWithBarrier(BlockIt.getNextPlayer(this)); 
             for (Node child : childNodes) {
-                //value = min(value, minimax(child, depth − 1, false))
+                value = (GameNode) child.min(value, minimax((GameNode) child, depth+1, true));
             }  
-            //return value;
+            return value;
         }
-        return 1;
+        
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import game.BlockIt;
 import game.GameBoard;
+import game.Player;
 
 /**
  * Represents an instance of a node in a search graph of a solution for a level in the game.
@@ -58,10 +59,10 @@ public class GameNode extends Node
      * Expands a node, i.e, returns its possible children.
      * @return The children of this node.
      */
-    public ArrayList<Node> expandNode()
+    public ArrayList<Node> expandNode(Player player)
     {
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        int[] currentPlayerCoords = BlockIt.getCurrentPlayer().getPosition();
+        int[] currentPlayerCoords = player.getPosition();
 
         if(this.board.validateMoveDown(currentPlayerCoords))
             nodeList.add(new GameNode(this,  "move down " + currentPlayerCoords[0] + " " 
@@ -86,9 +87,9 @@ public class GameNode extends Node
      * Expands a node, i.e, returns its possible children, including barrier placements.
      * @return The children of this node.
      */
-    public ArrayList<Node> expandNodeWithBarrier()
+    public ArrayList<Node> expandNodeWithBarrier(Player player)
     {
-        ArrayList<Node> nodeList = expandNode();
+        ArrayList<Node> nodeList = expandNode(player);
         char[][] currentBoard = board.getBoard();
 
         GameBoard newBoard;
@@ -200,8 +201,12 @@ public class GameNode extends Node
      * Checks if current node is a leaf in the search tree
      * @return True if the node is a leaf
      */
-    public boolean isTerminal() {
+    public boolean isTerminal() { 
         return true;
+    }
+
+    public void calculateHeuristic(GameBoard board, char color) {
+        this.heuristic.calculate(board, color);
     }
 
 }

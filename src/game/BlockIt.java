@@ -430,4 +430,9 @@ public class BlockIt
     {
         return players;
     }
+
+    public static Player getNextPlayer(Player player) {
+        int nextPlayer;
+        return ((nextPlayer = players.indexOf(player)) >= players.size() ? players.get(0) : players.get(nextPlayer));
+    }
 }

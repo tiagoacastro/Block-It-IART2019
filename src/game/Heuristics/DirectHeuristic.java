@@ -1,4 +1,4 @@
-package game.Heuristics;
+package game.heuristics;
 
 import game.GameBoard;
 
