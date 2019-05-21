@@ -94,17 +94,61 @@ public class GameNode extends Node
 
         GameBoard newBoard;
 
-        for(int i = 0; i < currentBoard.length; i++)
-            for(int j = 0; j < currentBoard[i].length; j++)
+        for(Player p: BlockIt.getPlayers())
+        {
+            if(!p.equals(player))
             {
-                if(i % 2 != 0)
-                    if((newBoard = board.placeBarrier(j, i, 'h')) != null)
-                        nodeList.add(new GameNode(this, "barrier h " + i + " " + j, newBoard));
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] - 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] + 1), newBoard));
 
-                if(j % 2 != 0)
-                    if((newBoard = board.placeBarrier(j, i, 'v')) != null)
-                        nodeList.add(new GameNode(this, "barrier v " + i + " " + j, newBoard));
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] + 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] - 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] + 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] - 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] + 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] - 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] + 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] - 1), newBoard));
             }
+        }
+
 
         return nodeList;
     }

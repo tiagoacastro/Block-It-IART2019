@@ -191,66 +191,68 @@ public class BlockIt
 
     public static void playMenu()
     {
-        int option, playerCounter = 0;
-        String colors[] = {"Red", "Green", "Blue", "Yellow"};
+        int colorOption, option;
+        boolean alreadyTaken;
+        char[] colors = new char[] {'R', 'G', 'B', 'Y'};
 
-        do
+        players.clear();
+        players.trimToSize();
+
+        for(int i = 0; i < 2; i++)
         {
-            players.clear();
-            players.trimToSize();
-
-            for(int i = 1; i <= 4; i++)
+            do
             {
+                alreadyTaken = false;
+
                 System.out.println
                 (
-                    "+---------------+\n"
-                    + "| " + colors[i - 1] + " Player |\n"
-                    + "+---------------+\n"
-                    + "| 1 - None      |\n"
-                    + "+---------------+\n"
-                    + "| 2 - Human     |\n"
-                    + "+---------------+\n"
-                    + "| 3 - Easy      |\n"
-                    + "+---------------+\n"
-                    + "| 4 - Normal    |\n"
-                    + "+---------------+\n"
-                    + "| 5 - Hard      |\n"
-                    + "+---------------+\n"
+                    "+------------+\n"
+                    + "|  Player " + (i + 1) + "  |\n"
+                    + "+------------+\n"
+                    + "| 1 - Red    |\n"
+                    + "+------------+\n"
+                    + "| 2 - Green  |\n"
+                    + "+------------+\n"
+                    + "| 3 - Blue   |\n"
+                    + "+------------+\n"
+                    + "| 4 - Yellow |\n"
+                    + "+------------+\n"
                 );
     
-                option = getOption(5);
-    
-                if(option > 1)
+                colorOption = getOption(4);
+
+                for(Player player: players)
                 {
-                    switch(i)
+                    if(player.getColor() == colors[colorOption - 1])
                     {
-                        case 1:
-                            players.add(new Player(option - 1, new int[]{0, (GameBoard.getBoardSize() - 1) / 2}, 'R'));
-                            break;
-
-                        case 2:
-                            players.add(new Player(option - 1, 
-                                new int[]{(GameBoard.getBoardSize() - 1) / 2,  GameBoard.getBoardSize() - 1}, 'G'));
-                            break;
-
-                        case 3:
-                            players.add(new Player(option - 1, 
-                                new int[]{ GameBoard.getBoardSize() - 1, ( GameBoard.getBoardSize() - 1) / 2}, 'B'));
-                            break;
-
-                        case 4:
-                            players.add(new Player(option - 1, new int[]{( GameBoard.getBoardSize() - 1) / 2, 0} ,'Y'));
-                            break;
+                        alreadyTaken = true;
+                        System.out.println("That color has already been chosen");
+                        break;
                     }
-
-                    playerCounter++;
                 }
+                    
             }
+            while(alreadyTaken);
 
-            if(playerCounter <= 1)
-                System.out.println("There must be at least two players");
+            System.out.println
+            (
+                "+---------------+\n"
+                + "|   Difficulty  |\n"
+                + "+---------------+\n"
+                + "| 1 - Human     |\n"
+                + "+---------------+\n"
+                + "| 2 - Easy      |\n"
+                + "+---------------+\n"
+                + "| 3 - Normal    |\n"
+                + "+---------------+\n"
+                + "| 4 - Hard      |\n"
+                + "+---------------+\n"
+            );
+
+            option = getOption(4);
+
+            players.add(new Player(option, colors[colorOption - 1]));
         }
-        while(playerCounter <= 1);
     }
 
     public static void settingsMenu()
@@ -402,8 +404,7 @@ public class BlockIt
             return 0;
         }
 
-
-        while(option < 1 && option > maxValue)
+        while(option < 1 || option > maxValue)
         {
             System.out.println("Invalid option.\nPlease try again");
             

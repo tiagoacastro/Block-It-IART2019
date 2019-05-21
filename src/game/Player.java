@@ -24,6 +24,35 @@ public class Player
         this.color = color;
     }
 
+    public Player(int difficulty, char color)
+    {
+        this.difficulty = difficulty;
+        this.color = color;
+
+        switch(color)
+        {
+            case 'R':
+                position = new int[]{0, (GameBoard.getBoardSize() - 1) / 2};
+                break;
+
+            case 'G':
+                position = new int[]{(GameBoard.getBoardSize() - 1) / 2,  GameBoard.getBoardSize() - 1};
+                break;
+
+            case 'B':
+                position = new int[]{ GameBoard.getBoardSize() - 1, ( GameBoard.getBoardSize() - 1) / 2};
+                break;
+
+            case 'Y':
+                position = new int[]{( GameBoard.getBoardSize() - 1) / 2, 0};
+                break;
+
+            default:
+                System.out.println("Unsuported color " + color);
+                position = new int[]{0, 0};
+        }
+    }
+
     //Bot function
     public void play()
     {
@@ -209,6 +238,11 @@ public class Player
             default:
                 return "Unknown";
         }
+    }
+
+    public boolean equals(Player p)
+    {
+        return p.getColor() == color;
     }
 
     public int getDifficulty()
