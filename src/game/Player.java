@@ -268,12 +268,37 @@ public class Player
      * @param maximizingPlayer
      * @return
      */
-
     public GameNode minimax(GameNode node, int depth, boolean maximizingPlayer) {
+        return minimaxAux(node, depth, null, null, maximizingPlayer);
+    }
+
+    /**
+     * Determines the player bot's next move through the use of the minimax algorithm with alpha beta pruning
+     * @param node
+     * @param depth
+     * @param alpha
+     * @param beta
+     * @param maximizingPlayer
+     * @return
+     */
+    public GameNode alphaBeta(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
+        return minimaxAux(node, depth, alpha, beta, maximizingPlayer);
+    }
+
+    /**
+     * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
+     * @param node
+     * @param depth
+     * @param maximizingPlayer
+     * @return
+     */
+
+    private GameNode minimaxAux(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
 
         GameNode value = null;
+        boolean isAlphaBeta = (alpha != null && beta != null);
 
-        if (depth == Node.MAX_SEARCH_DEPTH /*|| node.isTerminal() */) { // todo check search depth and isTerminal
+        if (depth == Node.MAX_SEARCH_DEPTH || node.isTerminal() ) { // todo check search depth and isTerminal
             node.calculateHeuristic(node.getGameBoard(), color);
             return node;
         }
@@ -282,81 +307,28 @@ public class Player
             ArrayList<Node> childNodes = node.expandNodeWithBarrier(this); 
             for (Node child : childNodes) {
                 value = (GameNode) child.max(value, minimax((GameNode) child, depth+1, false));
+                if (isAlphaBeta) {
+                    alpha = (GameNode) child.max(alpha, value);
+                    if (Node.ge(alpha, beta)) {
+                        break;
+                    }
+                }
             }
             return value;
         } else {
             ArrayList<Node> childNodes = node.expandNodeWithBarrier(BlockIt.getNextPlayer(this)); 
             for (Node child : childNodes) {
                 value = (GameNode) child.min(value, minimax((GameNode) child, depth+1, true));
+                if(isAlphaBeta) {
+                    beta = (GameNode) child.min(beta, value);
+                    if (Node.ge(alpha, beta)) {
+                        break;
+                    }
+                } 
             }  
             return value;
         }
         
     }
 
-    /**
-     * Determines the player bot's next move through the use of the minimax algorithm with alphabeta pruning
-     * @param node
-     * @param depth
-     * @param alpha
-     * @param beta
-     * @param maximizingPlayer
-     * @return
-     */
-
-
-    /*
-    function alphabeta(node, depth, α, β, maximizingPlayer) is
-    if depth = 0 or node is a terminal node then
-        return the heuristic value of node
-    if maximizingPlayer then
-        value := −∞
-        for each child of node do
-            value := max(value, alphabeta(child, depth − 1, α, β, FALSE))
-            α := max(α, value)
-            if α ≥ β then
-                break (* β cut-off *)
-        return value
-    else
-        value := +∞
-        for each child of node do
-            value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
-            β := min(β, value)
-            if α ≥ β then
-                break (* α cut-off *)
-        return value
-     */
-
-    public GameNode alphabeta(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
-
-        GameNode value = null;
-
-        if (depth == Node.MAX_SEARCH_DEPTH /*|| node.isTerminal() */) { // todo check search depth and isTerminal
-            node.calculateHeuristic(node.getGameBoard(), color);
-            return node;
-        }
-
-        if (maximizingPlayer) {
-            ArrayList<Node> childNodes = node.expandNodeWithBarrier(this); 
-            for (Node child : childNodes) {
-                value = (GameNode) child.max(value, alphabeta((GameNode) child, depth+1, alpha, beta, false));
-                alpha = (GameNode) child.max(alpha, value);
-                if (Node.ge(alpha, beta)) {
-                    break;
-                }
-            }
-            return value;
-        } else {
-            ArrayList<Node> childNodes = node.expandNodeWithBarrier(BlockIt.getNextPlayer(this)); 
-            for (Node child : childNodes) {
-                value = (GameNode) child.min(value, alphabeta((GameNode) child, depth+1, alpha, beta, true));
-                beta = (GameNode) child.min(beta, value);
-                if (Node.ge(alpha, beta)) {
-                    break;
-                }
-            }  
-            return value;
-        }
-        
-    }
 }
