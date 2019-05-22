@@ -61,7 +61,7 @@ public class Player
         for(int i = 0; i < Node.getSolution().size(); i++)
             System.out.println(Node.getSolution().get(i));
 
-        //node = minimax(node, 0, true);
+        node = minimax(node, 0, true);
     }
 
     public boolean move(String move)
