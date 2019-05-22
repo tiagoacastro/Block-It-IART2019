@@ -428,6 +428,11 @@ public class GameBoard
         return BOARD_SIZE;
     }
 
+    public static int getPlayBoardSize()
+    {
+        return (BOARD_SIZE - 1) / 2;
+    }
+
     public static void setBoardSize(int boardSize)
     {
         BOARD_SIZE = boardSize;

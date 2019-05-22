@@ -494,9 +494,9 @@ public class BlockIt
         return players;
     }
 
-    public static Player getNextPlayer(Player player) {
+    public static Player getNextPlayer() {
         int nextPlayer;
-        return ((nextPlayer = players.indexOf(player)) >= players.size() ? players.get(0) : players.get(nextPlayer));
+        return ((nextPlayer = currentPlayer + 1) >= players.size() ? players.get(0) : players.get(nextPlayer));
     }
 
     public static void setPlayers(ArrayList<Player> list)

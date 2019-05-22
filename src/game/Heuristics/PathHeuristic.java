@@ -112,7 +112,7 @@ public class PathHeuristic extends Heuristic
             currentPlayerValue--;
 
 
-        value = oppentValues - currentPlayerValue;
+        value = GameBoard.getPlayBoardSize() - currentPlayerValue;
     }
 
     /**

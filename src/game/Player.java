@@ -56,7 +56,7 @@ public class Player
     //Bot function
     public void play()
     {
-        Node newNode = alphaBeta(node, 0, node, node, true);
+        Node newNode = minimax(node, 0, true);
 
         if(newNode == null)
         {
@@ -299,9 +299,21 @@ public class Player
         ArrayList<Node> childNodes;
 
          // todo check search depth and isTerminal
-        if (depth == Node.MAX_SEARCH_DEPTH || node.isTerminal()) 
+        if (depth == Node.MAX_SEARCH_DEPTH) 
         {
-            node.calculateHeuristic(node.getGameBoard(), color);
+            node.calculateHeuristic(color);
+            return node;
+        }
+
+        if(isWinner())
+        {
+            node.getHeuristic().value = 100;
+            return node;
+        }
+
+        if(BlockIt.getNextPlayer().isWinner())
+        {
+            node.getHeuristic().value = -100;
             return node;
         }
 
@@ -314,7 +326,8 @@ public class Player
         {
             for (Node child : childNodes) 
             {
-                value = (GameNode) child.max(value, alphaBeta((GameNode) child, depth + 1, alpha, beta, false));
+                ((GameNode) child).calculateHeuristic(color);
+                value = (GameNode) child.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
 
                 if (isAlphaBeta) 
                 {
@@ -323,27 +336,26 @@ public class Player
                     if (alpha.ge(beta)) 
                         break;
                 }
-            }
-
-            return value;
+            }  
         } 
         else 
         {
             for (Node child : childNodes) 
             {
-                value = (GameNode) child.min(value, alphaBeta((GameNode) child, depth + 1, alpha, beta, true));
+                ((GameNode) child).calculateHeuristic(color);
+                value = (GameNode) child.min(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, true));
 
                 if(isAlphaBeta) 
                 {
                     beta = (GameNode) child.min(beta, value);
 
-                    if (alpha.ge(beta)) 
+                    if (beta.ge(alpha)) //Changed from alpha.ge(beta)
                         break;
                 } 
             }
-
-            return value;
         }
+
+        return value;
         
     }
 
