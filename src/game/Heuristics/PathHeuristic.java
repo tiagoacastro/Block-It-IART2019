@@ -1,5 +1,6 @@
 package game.heuristics;
 
+import game.BlockIt;
 import game.GameBoard;
 import game.Player;
 import game.node.Node;
@@ -27,67 +28,91 @@ public class PathHeuristic extends Heuristic
      * @param board The board to which the heuristic's value is calculated.
      * @param color The color of the player
      */
-    public void calculate(GameBoard board, char color) {
+    public void calculate(GameBoard board, char color, boolean move) {
         PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<PlayerNode>();
         ArrayList<PlayerNode> children = new ArrayList<PlayerNode>();
         ArrayList<String> visitedNodes = new ArrayList<String>();
         PlayerNode currentNode;
-        boolean active = false, visited = false;
+        boolean active = false, visited = false, foundSolution;
+        int[] values = new int[BlockIt.getPlayers().size()];
 
-        Node.getSolution().clear();
-        Node.getSolution().trimToSize();
-
-        activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, position, color));
-
-        while (!activeNodes.isEmpty())
+        for(int i = 0; i < values.length; i++)
         {
-            currentNode = activeNodes.peek();
-
-            if(Player.isWinner(currentNode.getColor(), currentNode.getPosition()))
+            Node.getSolution().clear();
+            Node.getSolution().trimToSize();
+            
+            foundSolution = false;
+    
+            activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, position, color));
+    
+            while (!activeNodes.isEmpty())
             {
-                currentNode.traceSolutionUp();
-                value = Node.getSolution().size();
-                return;
-            }
-
-
-            activeNodes.poll();
-            visitedNodes.add(currentNode.getId());
-
-            children = currentNode.expandPlayerNode();
-
-            for (Node child : children)
-            {
-                for (String id : visitedNodes)
-                    if (id.equals(child.getId()))
-                    {
-                        visited = true;
-                        break;
-                    }
-
-                if (visited)
+                currentNode = activeNodes.peek();
+    
+                if(Player.isWinner(currentNode.getColor(), currentNode.getPosition()))
                 {
-                    visited = false;
-                    continue;
+                    currentNode.traceSolutionUp();
+                    values[i] = Node.getSolution().size();
+                    foundSolution = true;
+                    break;
                 }
-
-                for (Node n : activeNodes)
-                    if (n.getId().equals(child.getId())) {
-                        active = true;
-                        break;
+    
+    
+                activeNodes.poll();
+                visitedNodes.add(currentNode.getId());
+    
+                children = currentNode.expandPlayerNode();
+    
+                for (Node child : children)
+                {
+                    for (String id : visitedNodes)
+                        if (id.equals(child.getId()))
+                        {
+                            visited = true;
+                            break;
+                        }
+    
+                    if (visited)
+                    {
+                        visited = false;
+                        continue;
                     }
-
-                if (!active)
-                    activeNodes.add((PlayerNode) child);
-
-                active = false;
+    
+                    for (Node n : activeNodes)
+                        if (n.getId().equals(child.getId())) {
+                            active = true;
+                            break;
+                        }
+    
+                    if (!active)
+                        activeNodes.add((PlayerNode) child);
+    
+                    active = false;
+                }
             }
+
+            if(foundSolution)
+                continue;
+    
+            children.clear();
+            children.trimToSize();
+    
+            values[i] = Integer.MAX_VALUE;
         }
 
-        children.clear();
-        children.trimToSize();
+        int currentPlayerValue = 0, oppentValues = 0;
+        
+        for(int i = 0; i < values.length; i++)
+            if(i == BlockIt.getPlayerIndex())
+                currentPlayerValue = values[i];
+            else
+                oppentValues += values[i];
 
-        value = Integer.MAX_VALUE;
+        if(!move)
+            currentPlayerValue--;
+
+
+        value = oppentValues - currentPlayerValue;
     }
 
     /**

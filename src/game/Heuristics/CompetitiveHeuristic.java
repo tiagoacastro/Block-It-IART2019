@@ -12,7 +12,7 @@ public class CompetitiveHeuristic extends Heuristic
      * @param board The board to which the heuristic's value is calculated.
      * @param color The color of the player
      */
-    public void calculate(GameBoard board, char color) {
+    public void calculate(GameBoard board, char color, boolean move) {
         int diff = 0;
 
         calculatedistances(board);

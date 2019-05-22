@@ -16,10 +16,10 @@ public class BlockIt
 
     public static void main(String[] args) throws Exception 
     {
-        new BlockIt();
+        new BlockIt(false);
     }
 
-    public BlockIt()
+    public BlockIt(boolean debug)
     {
         Player.setMaxBarriers(5);
         GameBoard.setBoardSize(17);
@@ -27,7 +27,8 @@ public class BlockIt
         players = new ArrayList<Player>();
         currentPlayer = 0;
 
-        mainMenu();
+        if(!debug)
+            mainMenu();
     }
 
     public static void play()
@@ -47,7 +48,7 @@ public class BlockIt
 
                 Player.node.setHeuristic(player.getNewHeuristic());
 
-                System.out.println(player.getName() + " Player's turn");
+                System.out.println(player.getName() + " Player's turn\n");
     
                 if(player.getDifficulty() == 1) //Human
                 {
@@ -432,6 +433,11 @@ public class BlockIt
         return players.get(currentPlayer);
     }
 
+    public static int getPlayerIndex()
+    {
+        return currentPlayer;
+    }
+
     public static ArrayList<Player> getPlayers()
     {
         return players;
@@ -440,5 +446,10 @@ public class BlockIt
     public static Player getNextPlayer(Player player) {
         int nextPlayer;
         return ((nextPlayer = players.indexOf(player)) >= players.size() ? players.get(0) : players.get(nextPlayer));
+    }
+
+    public static void setPlayers(ArrayList<Player> list)
+    {
+        players = list;
     }
 }

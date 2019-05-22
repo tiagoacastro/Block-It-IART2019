@@ -29,7 +29,7 @@ public abstract class Heuristic {
 	 * @param board The board to which the heuristic's value is calculated.
 	 * @param color The color of the player
 	 */
-	public abstract void calculate(GameBoard board, char color);
+	public abstract void calculate(GameBoard board, char color, boolean move);
 
 	/**
 	 * Returns a new instance of this heuristic sub-class.

@@ -12,7 +12,7 @@ public class DirectHeuristic extends Heuristic
        * @param board The board to which the heuristic's value is calculated.
        * @param color The color of the player
        */
-      public void calculate(GameBoard board, char color) {
+      public void calculate(GameBoard board, char color, boolean move) {
             calculatedistances(board);
 
             if(otherWin(board, color))

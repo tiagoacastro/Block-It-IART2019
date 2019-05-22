@@ -276,7 +276,6 @@ public class Player
      * @param maximizingPlayer
      * @return
      */
-
     private GameNode minimaxAux(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
 
         GameNode value = null;

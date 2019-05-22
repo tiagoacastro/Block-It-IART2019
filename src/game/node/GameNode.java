@@ -90,7 +90,6 @@ public class GameNode extends Node
     public ArrayList<Node> expandNodeWithBarrier(Player player)
     {
         ArrayList<Node> nodeList = expandNode(player);
-        char[][] currentBoard = board.getBoard();
 
         GameBoard newBoard;
 
@@ -255,7 +254,7 @@ public class GameNode extends Node
     }
 
     public void calculateHeuristic(GameBoard board, char color) {
-        this.heuristic.calculate(board, color);
+        this.heuristic.calculate(board, color, operator.split(" ")[0].equals("barrier"));
     }
 
 }
