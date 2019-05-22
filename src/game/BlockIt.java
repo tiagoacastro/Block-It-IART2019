@@ -80,11 +80,64 @@ public class BlockIt
                             break;
     
                         case 2:
-                            System.out.println("Type the coordinates of the central piece of the barrier in the format x,y,d (no spaces), with d being the direction (h for horizontal and v for vertical)");
                             
+                            int x, y;
+                            char direction;
+
                             do
                             {
-                                validPlay = player.useBarrier(scanner.nextLine());
+                                do
+                                {
+                                    System.out.println("Type the X coordinate of the barrier's central piece");
+
+                                    try
+                                    {
+                                        x = scanner.nextInt();
+                                        break;
+                                    }
+                                    catch(InputMismatchException e)
+                                    {
+                                        System.out.println("Invalid Input");
+                                        continue;
+                                    }
+                                }
+                                while(true);
+
+                                do
+                                {
+                                    System.out.println("Type the Y coordinate of the barrier's central piece");
+
+                                    try
+                                    {
+                                        y = scanner.nextInt();
+                                        break;
+                                    }
+                                    catch(InputMismatchException e)
+                                    {
+                                        System.out.println("Invalid Input");
+                                        continue;
+                                    }
+                                }
+                                while(true);
+
+                                do
+                                {
+                                    System.out.println("Type the direction of the barrier ('v' for vertical or 'h' for horizontal)");
+
+                                    String line = scanner.nextLine();
+
+                                    if(line.length() > 1)
+                                    {
+                                        System.out.println("Invalid Input");
+                                        continue;
+                                    }
+                                        
+                                    direction = line.charAt(0);
+                                    break;
+                                }
+                                while(true);
+                                
+                                validPlay = player.useBarrier(x, y, direction);
                             }
                             while(!validPlay);       
                     }
@@ -406,8 +459,7 @@ public class BlockIt
         }
         catch(InputMismatchException e)
         {
-            System.out.println("Invalid input");
-            return 0;
+            option = 0;
         }
 
         while(option < 1 || option > maxValue)
@@ -420,8 +472,7 @@ public class BlockIt
             }
             catch(InputMismatchException e)
             {
-                System.out.println("Invalid input");
-                return 0;
+                option = 0;
             }
         }
 

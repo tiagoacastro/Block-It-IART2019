@@ -56,10 +56,29 @@ public class Player
     //Bot function
     public void play()
     {
-        node = minimax(node, 0, true);
+        Node newNode = alphaBeta(node, 0, node, node, true);
 
-        if(node.getOperator().split(" ")[0].equals("barrier"))
-            barriers--;
+        if(newNode == null)
+        {
+            System.out.println("MiniMax returned null");
+            return;
+        }
+
+        String[] operatorParams = newNode.getOperator().split(" ");
+
+        if(operatorParams.length != 4)
+        {
+            System.out.println("Invalid operator obtained by minimax");
+            return;
+        }
+
+        if(operatorParams[0].equals("move"))
+            move(operatorParams[1]);
+        else
+            useBarrier(Integer.parseInt(operatorParams[3]), Integer.parseInt(operatorParams[2]), operatorParams[1].charAt(0));
+
+        System.out.println(newNode.getOperator());
+        System.out.println(newNode.getHeuristic().value);
     }
 
     public boolean move(String move)
@@ -104,15 +123,9 @@ public class Player
             return false;
     }
 
-    public boolean useBarrier(String coords)
+    public boolean useBarrier(int x, int y, char direction)
     {
-        String[] params = coords.split(",");
-
-        if(params.length != 3)
-            return false;
-
-        GameBoard newBoard = node.getGameBoard().placeBarrier(Integer.parseInt(params[0]), 
-            Integer.parseInt(params[1]), params[2].charAt(0));
+        GameBoard newBoard = node.getGameBoard().placeBarrier(x, y, direction);
 
         if(newBoard != null)
         {
@@ -283,35 +296,52 @@ public class Player
 
         GameNode value = null;
         boolean isAlphaBeta = (alpha != null && beta != null);
+        ArrayList<Node> childNodes;
 
-        if (depth == Node.MAX_SEARCH_DEPTH || node.isTerminal() ) { // todo check search depth and isTerminal
+         // todo check search depth and isTerminal
+        if (depth == Node.MAX_SEARCH_DEPTH || node.isTerminal()) 
+        {
             node.calculateHeuristic(node.getGameBoard(), color);
             return node;
         }
 
-        if (maximizingPlayer) {
-            ArrayList<Node> childNodes = node.expandNodeWithBarrier(this); 
-            for (Node child : childNodes) {
-                value = (GameNode) child.max(value, minimax((GameNode) child, depth+1, false));
-                if (isAlphaBeta) {
+        if(barriers > 0)
+            childNodes = node.expandNodeWithBarrier(this);
+        else
+            childNodes = node.expandNode(this);
+
+        if (maximizingPlayer) 
+        {
+            for (Node child : childNodes) 
+            {
+                value = (GameNode) child.max(value, alphaBeta((GameNode) child, depth + 1, alpha, beta, false));
+
+                if (isAlphaBeta) 
+                {
                     alpha = (GameNode) child.max(alpha, value);
-                    if (alpha.ge(beta)) {
+
+                    if (alpha.ge(beta)) 
                         break;
-                    }
                 }
             }
+
             return value;
-        } else {
-            ArrayList<Node> childNodes = node.expandNodeWithBarrier(BlockIt.getNextPlayer(this)); 
-            for (Node child : childNodes) {
-                value = (GameNode) child.min(value, minimax((GameNode) child, depth+1, true));
-                if(isAlphaBeta) {
+        } 
+        else 
+        {
+            for (Node child : childNodes) 
+            {
+                value = (GameNode) child.min(value, alphaBeta((GameNode) child, depth + 1, alpha, beta, true));
+
+                if(isAlphaBeta) 
+                {
                     beta = (GameNode) child.min(beta, value);
-                    if (alpha.ge(beta)) {
+
+                    if (alpha.ge(beta)) 
                         break;
-                    }
                 } 
-            }  
+            }
+
             return value;
         }
         
