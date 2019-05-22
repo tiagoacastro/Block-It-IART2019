@@ -57,6 +57,9 @@ public class Player
     public void play()
     {
         node = minimax(node, 0, true);
+
+        if(node.getOperator().split(" ")[0].equals("barrier"))
+            barriers--;
     }
 
     public boolean move(String move)
