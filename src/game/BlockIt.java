@@ -40,6 +40,10 @@ public class BlockIt
 
             for(; currentPlayer < players.size(); currentPlayer++)
             {
+                if(currentPlayer >= players.size())
+                    currentPlayer = 0;
+
+                    
                 Player player = players.get(currentPlayer);
 
                 System.out.println(player.getName() + " Player's turn");
