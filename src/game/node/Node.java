@@ -208,6 +208,11 @@ public abstract class Node
         return heuristic;
     }
 
+    public void setHeuristic(Heuristic h)
+    {
+        heuristic = h;
+    }
+
     public void setPathCost(int cost)
     {
         this.pathCost = cost;

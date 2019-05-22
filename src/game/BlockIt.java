@@ -43,8 +43,9 @@ public class BlockIt
                 if(currentPlayer >= players.size())
                     currentPlayer = 0;
 
-                    
                 Player player = players.get(currentPlayer);
+
+                Player.node.setHeuristic(player.getNewHeuristic());
 
                 System.out.println(player.getName() + " Player's turn");
     

@@ -1,6 +1,8 @@
 package game.node;
 
 import game.GameBoard;
+import game.heuristics.Heuristic;
+
 import java.util.ArrayList;
 
 
@@ -8,6 +10,16 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 {
     private int[] position;
     private char color;
+
+    public PlayerNode(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic, GameBoard board,
+        int[] position, char color)
+    {
+        super(parentNode, depth, pathCost, operator, heuristic, board);
+
+        this.position = position;
+        this.color = color;
+        this.id = position[0] + "-" + position[1];
+    }
 
     public PlayerNode(Node parentNode, String operator, GameBoard board, int[] position, char color)
     {

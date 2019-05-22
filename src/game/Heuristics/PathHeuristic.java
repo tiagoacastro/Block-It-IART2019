@@ -2,7 +2,6 @@ package game.heuristics;
 
 import game.GameBoard;
 import game.Player;
-import game.node.GameNode;
 import game.node.Node;
 import game.node.PlayerNode;
 
@@ -14,11 +13,15 @@ import java.util.PriorityQueue;
  */
 public class PathHeuristic extends Heuristic
 {
-    private GameNode node;
+    private int[] position;
+    private char color;
 
-    public void PathHeuristic(GameNode node){
-        this.node = node;
+    public PathHeuristic(int[] position, char color)
+    {
+        this.position = position;
+        this.color = color;
     }
+
     /**
      * Calculates the heuristic's value based on the distance to the wall.
      * @param board The board to which the heuristic's value is calculated.
@@ -34,7 +37,7 @@ public class PathHeuristic extends Heuristic
         Node.getSolution().clear();
         Node.getSolution().trimToSize();
 
-        activeNodes.add(new PlayerNode(node, node.getPlayerPosition(color), color));
+        activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, position, color));
 
         while (!activeNodes.isEmpty())
         {
@@ -93,6 +96,6 @@ public class PathHeuristic extends Heuristic
      */
     public Heuristic getNewHeuristic()
     {
-        return new PathHeuristic();
+        return new PathHeuristic(position, color);
     }
 }

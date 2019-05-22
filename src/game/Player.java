@@ -56,9 +56,6 @@ public class Player
     //Bot function
     public void play()
     {
-        for(int i = 0; i < Node.getSolution().size(); i++)
-            System.out.println(Node.getSolution().get(i));
-
         node = minimax(node, 0, true);
     }
 
@@ -186,8 +183,8 @@ public class Player
                 return new DirectHeuristic();
 
             case 4:
-                return new PathHeuristic();
-                
+                return new PathHeuristic(position, color);
+
             default:
                 return null;
         }
