@@ -21,7 +21,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
     public PlayerNode(GameNode modelNode, int[] position, char color)
     {
         super(modelNode.getParentNode(), modelNode.getDepth(), modelNode.getPathCost(), 
-            modelNode.getOperator(), modelNode.getSearchOption(), modelNode.getGameBoard());
+            modelNode.getOperator(), modelNode.getHeuristic(), modelNode.getGameBoard());
 
         this.position = position;
         this.color = color;

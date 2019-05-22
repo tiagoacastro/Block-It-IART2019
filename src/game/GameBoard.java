@@ -228,6 +228,9 @@ public class GameBoard
     {
         GameBoard newBoard;
 
+        if(x < 0 || x > BOARD_SIZE - 1 || y < 0 || y > BOARD_SIZE - 1)
+            return null;
+
         switch(direction)
         {
             case 'h':
@@ -248,7 +251,7 @@ public class GameBoard
 
     public GameBoard placeVerticalBarrier(int x, int y)
     {
-        if(x % 2 == 0 || y == 0 || y == BOARD_SIZE - 1 || board[y - 1][x] != ' ' || board[y + 1][x] != ' ')
+        if(x % 2 == 0 || y <= 0 || y >= BOARD_SIZE - 1 || board[y - 1][x] != ' ' || board[y + 1][x] != ' ')
             return null;
 
         if(x > 0 && board[y][x - 1] != ' ')
@@ -268,7 +271,7 @@ public class GameBoard
 
     public GameBoard placeHorizontalBarrier(int x, int y)
     {
-        if(y % 2 == 0 || x == 0 || x == BOARD_SIZE - 1 || board[y][x - 1] != ' ' || board[y][x + 1] != ' ')
+        if(y % 2 == 0 || x <= 0 || x >= BOARD_SIZE - 1 || board[y][x - 1] != ' ' || board[y][x + 1] != ' ')
             return null;
 
         if(y > 0 && board[y - 1][x] != ' ')

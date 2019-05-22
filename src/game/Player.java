@@ -1,8 +1,8 @@
 package game;
 
 import game.GameBoard;
+import game.heuristics.*;
 import game.node.*;
-import java.util.PriorityQueue;
 
 import java.util.ArrayList;
 
@@ -172,6 +172,24 @@ public class Player
 
             default:
                 return "Unknown";
+        }
+    }
+
+    public Heuristic getNewHeuristic()
+    {
+        switch(difficulty)
+        {
+            case 2:
+                return new CompetitiveHeuristic();
+
+            case 3:
+                return new DirectHeuristic();
+
+            case 4:
+                return new PathHeuristic();
+                
+            default:
+                return null;
         }
     }
 

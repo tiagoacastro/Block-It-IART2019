@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import game.BlockIt;
 import game.GameBoard;
 import game.Player;
+import game.heuristics.Heuristic;
 
 /**
  * Represents an instance of a node in a search graph of a solution for a level in the game.
@@ -32,10 +33,9 @@ public class GameNode extends Node
      * @param moves The number of mobes performed to get to this node.
      * @param board The state of the board in this node.
      */
-    public GameNode(Node parentNode, int depth, int pathCost, String operator,  
-        int searchOption, GameBoard board)
+    public GameNode(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic, GameBoard board)
     {
-        super(parentNode, depth, pathCost, operator, searchOption);
+        super(parentNode, depth, pathCost, operator, heuristic);
 
         this.board = board;
     }

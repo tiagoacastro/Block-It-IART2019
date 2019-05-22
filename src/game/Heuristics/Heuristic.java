@@ -1,7 +1,6 @@
 package game.heuristics;
 
 import game.GameBoard;
-import game.Player;
 
 /**
  * General heuristic class, serves as basis for more complex heuristics associated with a node.

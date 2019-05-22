@@ -140,7 +140,7 @@ public class BlockIt
         }
 
         if(Player.getNode() == null)
-            Player.setNode(new GameNode(null, 0, 0, "root", 1, new GameBoard(charBoard, pos)));
+            Player.setNode(new GameNode(null, 0, 0, "root", getCurrentPlayer().getNewHeuristic(), new GameBoard(charBoard, pos)));
         else
             Player.setBoard(new GameBoard(charBoard, pos));
     }

@@ -33,11 +33,6 @@ public abstract class Node
     protected int pathCost;
 
     /**
-     * The type of search being performed.
-     */
-    protected int searchOption;
-
-    /**
      * This node's operator.
      */
     protected String operator;
@@ -66,13 +61,13 @@ public abstract class Node
      * @param searchOption This node's search option.
      * @param heuristic This node's heuristic.
      */
-    public Node(Node parentNode, int depth, int pathCost, String operator, int searchOption)
+    public Node(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic)
     {
         this.parentNode = parentNode;
         this.depth = depth;
         this.pathCost = pathCost;
-        this.searchOption = 0;
         this.operator = operator;
+        this.heuristic = heuristic;
 
         if(parentNode == null)
             this.id = operator;
@@ -92,7 +87,7 @@ public abstract class Node
         this.pathCost = 1;
         this.parentNode = parentNode;
         this.operator = operator;
-        this.searchOption = parentNode.getSearchOption();
+        this.heuristic = parentNode.getHeuristic();
 
         this.id = parentNode.id + " -> " + operator;
     }
@@ -136,23 +131,6 @@ public abstract class Node
     public static ArrayList<String> getSolution()
     {
         return solution;
-    }
-
-    /**
-     * Sets the current search option.
-     * @param searchOption The new search option.
-     */
-    public void setSearchOption(int searchOption) {
-        this.searchOption = searchOption;
-    }
-
-    /**
-     * Retrieves the search option.
-     * @return The search option.
-     */
-    public int getSearchOption()
-    {
-        return searchOption;
     }
 
     /**
@@ -223,6 +201,11 @@ public abstract class Node
     public String getOperator()
     {
         return operator;
+    }
+
+    public Heuristic getHeuristic()
+    {
+        return heuristic;
     }
 
     public void setPathCost(int cost)
