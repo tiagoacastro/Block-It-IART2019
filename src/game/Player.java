@@ -2,7 +2,9 @@ package game;
 
 import game.GameBoard;
 import game.heuristics.*;
-import game.node.*;
+import game.node.GameNode;
+import game.node.Node;
+import game.node.PlayerNode;
 
 public class Player
 {
