@@ -23,7 +23,11 @@ public class Suite
         BlockIt.setPlayers(players);
         BlockIt.buildBoard();
 
-        ArrayList<PlayerNode> children = p1.getPlayerNode().expandPlayerNode();
+        int[] pos = BlockIt.getPlayers().get(0).getBoard().getPlayerPosition('Y');
+
+        System.out.println(pos[0] + "|" + pos[1]);
+
+        ArrayList<PlayerNode> children = p1.getPlayerNode().expandPlayerNode(true);
 
         for(Node n: children)
             System.out.println(n.getOperator());

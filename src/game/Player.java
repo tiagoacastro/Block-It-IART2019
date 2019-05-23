@@ -189,7 +189,6 @@ public class Player
                 return new PathHeuristic(color);
 
             default:
-                System.out.println("Unknown difficulty");
                 return null;
         }
     }

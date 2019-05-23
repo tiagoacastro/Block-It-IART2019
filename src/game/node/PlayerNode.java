@@ -2,6 +2,7 @@ package game.node;
 
 import game.BlockIt;
 import game.GameBoard;
+import game.Player;
 import game.heuristics.Heuristic;
 
 import java.util.ArrayList;
@@ -62,26 +63,44 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         this.id = position[0] + "-" + position[1];
     }
 
-    public ArrayList<PlayerNode> expandPlayerNode()
+    public ArrayList<PlayerNode> expandPlayerNode(boolean sameColor)
     {
         ArrayList<PlayerNode> nodeList = new ArrayList<PlayerNode>();
         GameBoard newBoard;
+        char nextColor = color;
+        int[] nextPosition = position.clone();
 
-        if((newBoard = this.board.moveDown(position)) != null)
-            nodeList.add(new PlayerNode(this, "move down " + position[0] + " " 
-                + position[1], newBoard, new int[] {position[0] + 2, position[1]}, color, barriers));
+        if(sameColor)
+        {
+            nextColor = color;
+            nextPosition = position.clone();
+        } 
+        else
+        {
+            for(Player player: BlockIt.getPlayers())
+                if(player.getColor() != color)
+                {
+                    nextPosition = player.getPosition().clone();
+                    nextColor = player.getColor();
+                    break;
+                }
+        }
 
-        if((newBoard = this.board.moveUp(position)) != null)
-            nodeList.add(new PlayerNode(this, "move up " + position[0] + " " 
-                + position[1], newBoard, new int[] {position[0] - 2, position[1]}, color, barriers));  
+        if((newBoard = this.board.moveDown(nextPosition)) != null)
+            nodeList.add(new PlayerNode(this, "move down " + nextPosition[0] + " " 
+                + nextPosition[1], newBoard, new int[] {nextPosition[0] + 2, nextPosition[1]}, nextColor, barriers));
 
-        if((newBoard = this.board.moveLeft(position)) != null)
+        if((newBoard = this.board.moveUp(nextPosition)) != null)
+            nodeList.add(new PlayerNode(this, "move up " + nextPosition[0] + " " 
+                + nextPosition[1], newBoard, new int[] {nextPosition[0] - 2, nextPosition[1]}, nextColor, barriers));  
+
+        if((newBoard = this.board.moveLeft(nextPosition)) != null)
             nodeList.add(new PlayerNode(this, "move left " + position[0] + " " 
-                + position[1], newBoard, new int[] {position[0], position[1] - 2}, color, barriers));    
+                + nextPosition[1], newBoard, new int[] {nextPosition[0], nextPosition[1] - 2}, nextColor, barriers));    
 
-        if((newBoard = this.board.moveRight(position)) != null)
+        if((newBoard = this.board.moveRight(nextPosition)) != null)
             nodeList.add(new PlayerNode(this, "move right " + position[0] + " " 
-                + position[1], newBoard, new int[] {position[0], position[1] + 2}, color, barriers)); 
+                + nextPosition[1], newBoard, new int[] {nextPosition[0], nextPosition[1] + 2}, nextColor, barriers)); 
 
         if(barriers <= 0)
             return nodeList;
@@ -92,39 +111,39 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             for(int j = 0; j < charBoard.length; j++)
                 if(charBoard[i][j] != '_' && charBoard[i][j] != 'X' && charBoard[i][j] != ' ')
                 {
-                    if(charBoard[i][j] != color)
+                    if(charBoard[i][j] != nextColor)
                     {
                         if ((newBoard = board.placeBarrier(j + 1, i - 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i - 1) + " " 
-                            + (j + 1), newBoard, position, color, barriers - 1));
+                            + (j + 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i + 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i + 1) + " " 
-                            + (j + 1), newBoard, position, color, barriers - 1));
+                            + (j + 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i - 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i - 1) + " " 
-                            + (j - 1), newBoard, position, color, barriers - 1));
+                            + (j - 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i + 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i + 1) + " " 
-                            + (j - 1), newBoard, position, color, barriers - 1));
+                            + (j - 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i - 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i - 1) + " " 
-                            + (j + 1), newBoard, position, color, barriers - 1));
+                            + (j + 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i + 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
-                            + (j + 1), newBoard, position, color, barriers - 1));
+                            + (j + 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i - 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i - 1) + " " 
-                            + (j - 1), newBoard, position, color, barriers - 1));
+                            + (j - 1), newBoard, position, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i + 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
-                            + (j - 1), newBoard, position, color, barriers - 1));
+                            + (j - 1), newBoard, position, nextColor, barriers - 1));
                     }
                 } 
                 
@@ -191,19 +210,19 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             if(value == null)
             {
                 value = new PlayerNode(father);
-                value.calculateHeuristic(color);
+                value.calculateHeuristic(board, color);
                 return value;
             }
             else
                 return value;
 
-        childNodes = father.expandPlayerNode();
+        childNodes = father.expandPlayerNode(maximizingPlayer);
 
         //System.out.println("--------------------------");
 
         for(PlayerNode n: childNodes)
         {
-            n.calculateHeuristic(color);
+            n.calculateHeuristic(board, color);
             System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
         }
             
