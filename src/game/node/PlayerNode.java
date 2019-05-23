@@ -201,25 +201,27 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         ArrayList<PlayerNode> childNodes;
         char playerColor = (maximizingPlayer ? color : BlockIt.getNextPlayer().getColor());
 
-        if (depth >= Node.MAX_SEARCH_DEPTH) 
+        if (depth >= Node.MAX_SEARCH_DEPTH || isWinner() || isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor()))) // reached max depth || we won || the other player won 
         {
-            calculateHeuristic(playerColor);
-            returnFlag = true;
+            value = new PlayerNode(father);
+            value.calculateHeuristic(playerColor);
+            return value;
+            //returnFlag = true;
         }
             
+        /*
         if(isWinner())
         {
             value = new PlayerNode(father);
             value.getHeuristic().setValue(100);
             returnFlag = true;
         }
-        else
-            if(isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor())))
-            {
-                value = new PlayerNode(father);
-                value.getHeuristic().setValue(-100);
-                returnFlag = true;
-            }        
+        else if(isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor())))
+        {
+            value = new PlayerNode(father);
+            value.getHeuristic().setValue(-100);
+            returnFlag = true;
+        }        
 
         if(returnFlag)
             if(value == null)
@@ -230,6 +232,8 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             }
             else
                 return value;
+
+        */
 
         childNodes = father.expandPlayerNode(maximizingPlayer);
 
@@ -282,6 +286,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         return value;
     }
 
+    /**
+     * 
+     */
     public boolean isWinner()
     {
         return isWinner(this.color, this.position);

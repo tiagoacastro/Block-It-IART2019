@@ -18,7 +18,7 @@ public class CompetitiveHeuristic extends Heuristic
         calculatedistances(board);
 
         if(otherWin(board, color))
-            value = Integer.MAX_VALUE;
+            value = Integer.MIN_VALUE;
         else
             switch(color)
             {
