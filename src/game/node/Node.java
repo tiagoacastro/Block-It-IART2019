@@ -14,7 +14,7 @@ public abstract class Node
     /**
      * Determines minimax's max search depth
      */
-    public static int MAX_SEARCH_DEPTH = 5;
+    public static int MAX_SEARCH_DEPTH = 1;
 
     /**
      * The parent node of this node.
@@ -140,7 +140,7 @@ public abstract class Node
      * @return
      */
 
-    public Node max(Node n, Node m) {
+    public static Node max(Node n, Node m) {
         if (n == null) {
             return m;
         } 
@@ -159,7 +159,7 @@ public abstract class Node
      * @return
      */
 
-    public Node min(Node n, Node m) {
+    public static Node min(Node n, Node m) {
         if (n == null) {
             return m;
         } 

@@ -398,6 +398,18 @@ public class GameBoard
         System.out.print("\n");
     }
 
+    public int[] getPlayerPosition(char color)
+    {
+        char[][] charBoard = copyBoard(board);
+
+        for(int i = 0; i < charBoard.length; i++)
+            for(int j = 0; j < charBoard[i].length; j++)
+                if(charBoard[i][j] == color)
+                    return new int[] {i, j};
+
+        return new int[] {-1};
+    }
+
     /**
      * Tests if a set of coordinates evaluates to an actual piece.
      * @param coords The piece's coordinates.
@@ -430,7 +442,7 @@ public class GameBoard
 
     public static int getPlayBoardSize()
     {
-        return (BOARD_SIZE - 1) / 2;
+        return (BOARD_SIZE + 1) / 2;
     }
 
     public static void setBoardSize(int boardSize)

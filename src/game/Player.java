@@ -199,7 +199,7 @@ public class Player
                 return new DirectHeuristic();
 
             case 4:
-                return new PathHeuristic(position, color);
+                return new PathHeuristic(color);
 
             default:
                 return null;
@@ -322,16 +322,29 @@ public class Player
         else
             childNodes = node.expandNode(this);
 
+            System.out.println("--------------------------");
+        for(Node n: childNodes)
+        {
+            ((GameNode) n).calculateHeuristic(color);
+            System.out.print(n.getOperator() + "-" + n.getHeuristic().value + " " ); 
+        }
+            
+
+        System.out.println("\n");
+
         if (maximizingPlayer) 
         {
             for (Node child : childNodes) 
             {
-                ((GameNode) child).calculateHeuristic(color);
-                value = (GameNode) child.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
+                //((GameNode) child).calculateHeuristic(color);
+
+                value = (GameNode) Node.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
+
+                System.out.println(value.getHeuristic().value);
 
                 if (isAlphaBeta) 
                 {
-                    alpha = (GameNode) child.max(alpha, value);
+                    alpha = (GameNode) Node.max(alpha, value);
 
                     if (alpha.ge(beta)) 
                         break;
@@ -342,12 +355,12 @@ public class Player
         {
             for (Node child : childNodes) 
             {
-                ((GameNode) child).calculateHeuristic(color);
-                value = (GameNode) child.min(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, true));
+                //((GameNode) child).calculateHeuristic(color);
+                value = (GameNode) Node.min(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, true));
 
                 if(isAlphaBeta) 
                 {
-                    beta = (GameNode) child.min(beta, value);
+                    beta = (GameNode) Node.min(beta, value);
 
                     if (beta.ge(alpha)) //Changed from alpha.ge(beta)
                         break;

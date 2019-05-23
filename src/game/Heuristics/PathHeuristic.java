@@ -17,9 +17,8 @@ public class PathHeuristic extends Heuristic
     private int[] position;
     private char color;
 
-    public PathHeuristic(int[] position, char color)
+    public PathHeuristic(char color)
     {
-        this.position = position;
         this.color = color;
     }
 
@@ -34,16 +33,16 @@ public class PathHeuristic extends Heuristic
         ArrayList<String> visitedNodes = new ArrayList<String>();
         PlayerNode currentNode;
         boolean active = false, visited = false, foundSolution;
-        int[] values = new int[BlockIt.getPlayers().size()];
+        int currentPlayerValue = 0, adversaryValue = 0;
 
-        for(int i = 0; i < values.length; i++)
+        for(int i = 0; i < BlockIt.getPlayers().size(); i++)
         {
             Node.getSolution().clear();
             Node.getSolution().trimToSize();
             
             foundSolution = false;
     
-            activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, position, color));
+            activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, board.getPlayerPosition(color), color));
     
             while (!activeNodes.isEmpty())
             {
@@ -52,11 +51,9 @@ public class PathHeuristic extends Heuristic
                 if(Player.isWinner(currentNode.getColor(), currentNode.getPosition()))
                 {
                     currentNode.traceSolutionUp();
-                    values[i] = Node.getSolution().size();
                     foundSolution = true;
                     break;
                 }
-    
     
                 activeNodes.poll();
                 visitedNodes.add(currentNode.getId());
@@ -92,22 +89,27 @@ public class PathHeuristic extends Heuristic
             }
 
             if(foundSolution)
+            {
+                if(i == BlockIt.getPlayerIndex())
+                    currentPlayerValue = Node.getSolution().size();
+                else
+                    adversaryValue += Node.getSolution().size();
+
                 continue;
-    
-            children.clear();
-            children.trimToSize();
-    
-            values[i] = Integer.MAX_VALUE;
-        }
-
-        int currentPlayerValue = 0, oppentValues = 0;
-        
-        for(int i = 0; i < values.length; i++)
-            if(i == BlockIt.getPlayerIndex())
-                currentPlayerValue = values[i];
+            }
             else
-                oppentValues += values[i];
+            {
+                if(i == BlockIt.getPlayerIndex())
+                    currentPlayerValue = Integer.MAX_VALUE;
+                else
+                    adversaryValue += Integer.MAX_VALUE;
 
+                children.clear();
+                children.trimToSize();
+            }
+                
+        }
+        
         if(!move)
             currentPlayerValue--;
 
@@ -121,6 +123,6 @@ public class PathHeuristic extends Heuristic
      */
     public Heuristic getNewHeuristic()
     {
-        return new PathHeuristic(position, color);
+        return new PathHeuristic(color);
     }
 }

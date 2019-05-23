@@ -62,7 +62,7 @@ public class GameNode extends Node
     public ArrayList<Node> expandNode(Player player)
     {
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        int[] currentPlayerCoords = player.getPosition();
+        int[] currentPlayerCoords = board.getPlayerPosition(player.getColor());
 
         if(this.board.validateMoveDown(currentPlayerCoords))
             nodeList.add(new GameNode(this,  "move down " + currentPlayerCoords[0] + " " 
@@ -93,6 +93,7 @@ public class GameNode extends Node
 
         GameBoard newBoard;
 
+        /*
         for(Player p: BlockIt.getPlayers())
         {
             if(!p.equals(player))
@@ -146,22 +147,10 @@ public class GameNode extends Node
                     nodeList.add(new 
                         GameNode(this, "barrier h " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] - 1), newBoard));
             }
-        }
+        } */
 
 
         return nodeList;
-    }
-
-    public int[] getPlayerPosition(char color)
-    {
-        char[][] charBoard = board.getBoard();
-
-        for(int i = 0; i < charBoard.length; i++)
-            for(int j = 0; j < charBoard[i].length; j++)
-                if(charBoard[i][j] == color)
-                    return new int[] {i, j};
-
-        return new int[] {-1};
     }
 
     /**
@@ -254,7 +243,7 @@ public class GameNode extends Node
     }
 
     public void calculateHeuristic(char color) {
-        this.heuristic.calculate(board, color, operator.split(" ")[0].equals("barrier"));
+        this.heuristic.calculate(board, color, operator.split(" ")[0].equals("move"));
     }
 
 }
