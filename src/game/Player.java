@@ -126,6 +126,7 @@ public class Player
             gameNode.setGameBoard(newBoard);
             playerNode.setPosition(newPosition);
             playerNode.setGameBoard(newBoard.cloneGameBoard());
+            BlockIt.getNextPlayer().getPlayerNode().setGameBoard(newBoard.cloneGameBoard());
             return true;
         }
         else
@@ -140,6 +141,7 @@ public class Player
         {
             gameNode.setGameBoard(newBoard);
             playerNode.setGameBoard(newBoard.cloneGameBoard());
+            BlockIt.getNextPlayer().getPlayerNode().setGameBoard(newBoard.cloneGameBoard());
             playerNode.useBarrier();
             return true;
         }

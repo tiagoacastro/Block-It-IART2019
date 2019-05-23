@@ -14,8 +14,8 @@ public class Suite
         ArrayList<Player> players = new ArrayList<Player>();
         new BlockIt(true);
 
-        Player p1 = new Player(1, 'R');
-        Player p2 = new Player(1, 'Y');
+        Player p1 = new Player(2, 'R');
+        Player p2 = new Player(2, 'Y');
 
         players.add(p1);
         players.add(p2);
@@ -23,7 +23,10 @@ public class Suite
         BlockIt.setPlayers(players);
         BlockIt.buildBoard();
 
-        int[] pos = BlockIt.getPlayers().get(0).getBoard().getPlayerPosition('Y');
+        for(Player player: players)
+            player.setPlayerNodeBoard(Player.getBoard());
+
+        int[] pos = Player.getBoard().getPlayerPosition('Y');
 
         System.out.println(pos[0] + "|" + pos[1]);
 

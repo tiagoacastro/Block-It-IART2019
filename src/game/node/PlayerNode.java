@@ -107,9 +107,10 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         char[][] charBoard = board.getBoard();
 
+
         for(int i = 0; i < charBoard.length; i++)
-            for(int j = 0; j < charBoard.length; j++)
-                if(charBoard[i][j] != '_' && charBoard[i][j] != 'X' && charBoard[i][j] != ' ')
+            for(int j = 0; j < charBoard[i].length; j++)
+            if(charBoard[i][j] != '_' && charBoard[i][j] != 'X' && charBoard[i][j] != ' ')
                 {
                     if(charBoard[i][j] != nextColor)
                     {
@@ -145,7 +146,18 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
                             + (j - 1), newBoard, position, nextColor, barriers - 1));
                     }
-                } 
+                }
+            /*
+            {
+                if((newBoard = board.placeBarrier(j, i, 'v')) != null)
+                    nodeList.add(new PlayerNode(this, "barrier v " + i + " " + j, newBoard, position, nextColor, 
+                    barriers - 1));
+
+                if((newBoard = board.placeBarrier(j, i, 'h')) != null)
+                    nodeList.add(new PlayerNode(this, "barrier h " + i + " " + j, newBoard, position, nextColor, 
+                    barriers - 1));
+            }*/
+            
                 
                 
         return nodeList;
@@ -189,10 +201,12 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         ArrayList<PlayerNode> childNodes;
         char playerColor = (maximizingPlayer ? color : BlockIt.getNextPlayer().getColor());
 
-         // todo check search depth and isTerminal
         if (depth >= Node.MAX_SEARCH_DEPTH) 
+        {
+            calculateHeuristic(playerColor);
             returnFlag = true;
-
+        }
+            
         if(isWinner())
         {
             value = new PlayerNode(father);
@@ -219,13 +233,14 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         childNodes = father.expandPlayerNode(maximizingPlayer);
 
-        //System.out.println("--------------------------");
+        //System.out.println("Children of " + father.getOperator());
 
+        /*
         for(PlayerNode n: childNodes)
         {
             n.calculateHeuristic(playerColor);
             System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
-        }
+        } */
             
         //System.out.println("\n");
 
@@ -233,25 +248,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         {
             for (PlayerNode child : childNodes) 
             {
-                //((GameNode) child).calculateHeuristic(playerColor);
-
-                /*
-                System.out.print("Before: ");
-
-                if(value != null)
-                    System.out.print(value.getHeuristic().getValue());
-                else
-                    System.out.print("null"); */
-                    
-                
                 if(Node.max(value, minimaxAux(child, depth + 1, alpha, beta, false)) == 1)
-                {
-                   // System.out.print(" (Replaced with " + child.getHeuristic().getValue() + " " + child.getOperator() + ") ");
                     value = child; 
-                }
-                    
-                //System.out.println(" After: " + value.getHeuristic().getValue());
-
+            
                 if (isAlphaBeta) 
                 {
                     if(Node.max(alpha, value) == 1)
@@ -266,7 +265,6 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         {
             for (PlayerNode child : childNodes) 
             {
-                //((GameNode) child).calculateHeuristic(color);
                 if(Node.min(value, minimaxAux(child, depth + 1, alpha, beta, true)) == 1)
                     value = child;
 
@@ -282,7 +280,6 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         }
 
         return value;
-        
     }
 
     public boolean isWinner()
