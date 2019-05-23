@@ -338,7 +338,7 @@ public class Player
             {
                 //((GameNode) child).calculateHeuristic(color);
 
-                value = (GameNode) Node.min(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
+                value = (GameNode) Node.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
 
                 System.out.println(value.getHeuristic().value);
 
