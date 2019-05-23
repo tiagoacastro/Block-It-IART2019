@@ -239,6 +239,11 @@ public class Player
         return gameNode;
     }
 
+    public PlayerNode getPlayerNode()
+    {
+        return playerNode;
+    }
+
     public static void setMaxBarriers(int maxBarriers)
     {
         MAX_BARRIERS = maxBarriers;

@@ -3,7 +3,6 @@ package game.node;
 import java.util.ArrayList;
 
 import game.heuristics.*;
-import game.Player;
 
 /**
  * Represents a regular node in a search problem.

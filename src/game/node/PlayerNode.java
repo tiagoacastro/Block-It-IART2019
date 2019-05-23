@@ -23,7 +23,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         this.id = position[0] + "-" + position[1];
     }
 
-    public PlayerNode(PlayerNode parentNode, String operator, GameBoard board, int[] position, char color, int barriers)
+    public PlayerNode(Node parentNode, String operator, GameBoard board, int[] position, char color, int barriers)
     {
         super(parentNode, operator, board);
 
@@ -87,10 +87,122 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                 + position[1], this.board.moveRight(position), 
                 new int[] {position[0], position[1] + 2}, color, barriers)); 
 
-        if(barriers > 0)
-        {
+        if(barriers <= 0)
+            return nodeList;
 
-        }
+        char[][] charBoard = board.getBoard();
+        GameBoard newBoard;
+
+        for(int i = 0; i < charBoard.length; i++)
+            for(int j = 0; j < charBoard.length; j++)
+                if(charBoard[i][j] != '_' && charBoard[i][j] != 'X' && charBoard[i][j] != ' ')
+                {
+                    if(charBoard[i][j] != color)
+                    {
+                        if ((newBoard = board.placeBarrier(position[1] + 1, position[0] - 1, 'v')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier v " + (position[0] - 1) + " " 
+                            + (position[1] + 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] + 1, position[0] + 1, 'v')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier v " + (position[0] + 1) + " " 
+                            + (position[1] + 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] - 1, position[0] - 1, 'v')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier v " + (position[0] - 1) + " " 
+                            + (position[1] - 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] - 1, position[0] + 1, 'v')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier v " + (position[0] + 1) + " " 
+                            + (position[1] - 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] + 1, position[0] - 1, 'h')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier h " + (position[0] - 1) + " " 
+                            + (position[1] + 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] + 1, position[0] + 1, 'h')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier h " + (position[0] + 1) + " " 
+                            + (position[1] + 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] - 1, position[0] - 1, 'h')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier h " + (position[0] - 1) + " " 
+                            + (position[1] - 1), newBoard, position, color, barriers - 1));
+
+                        if ((newBoard = board.placeBarrier(position[1] - 1, position[0] + 1, 'h')) != null)
+                            nodeList.add(new PlayerNode(this, "barrier h " + (position[0] + 1) + " " 
+                            + (position[1] - 1), newBoard, position, color, barriers - 1));
+                    }
+                } 
+                
+                
+        return nodeList;
+    }
+
+    /**
+     * Expands a node, i.e, returns its possible children, including barrier placements.
+     * @return The children of this node.
+     */
+    public ArrayList<Node> expandBarriers(int[] playerPos)
+    {
+        ArrayList<Node> nodeList = expandNode(playerPos);
+
+        GameBoard newBoard;
+
+        /*
+        for(Player p: BlockIt.getPlayers())
+        {
+            if(!p.equals(player))
+            {
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] - 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] + 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] - 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] + 1, 'v')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier v " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] - 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] + 1, p.getPosition()[0] + 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] + 1), newBoard));
+
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] - 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] - 1) + " " + (p.getPosition()[1] - 1), newBoard));
+
+                if((newBoard = 
+                    Player.getNode().getGameBoard().placeBarrier(p.getPosition()[1] - 1, p.getPosition()[0] + 1, 'h')) 
+                    != null)
+                    nodeList.add(new 
+                        GameNode(this, "barrier h " + (p.getPosition()[0] + 1) + " " + (p.getPosition()[1] - 1), newBoard));
+            }
+        } */
+
 
         return nodeList;
     }

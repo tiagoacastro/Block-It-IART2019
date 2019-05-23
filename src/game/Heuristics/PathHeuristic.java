@@ -2,7 +2,6 @@ package game.heuristics;
 
 import game.BlockIt;
 import game.GameBoard;
-import game.Player;
 import game.node.Node;
 import game.node.PlayerNode;
 
@@ -109,8 +108,8 @@ public class PathHeuristic extends Heuristic
                 
         }
         
-        if(!move)
-            currentPlayerValue--;
+        if(!move) //Penalty for barrier
+            currentPlayerValue++;
 
 
         value = GameBoard.getBoardSize() - currentPlayerValue;
