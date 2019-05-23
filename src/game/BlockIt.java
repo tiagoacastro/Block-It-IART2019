@@ -34,6 +34,9 @@ public class BlockIt
     public static void play()
     {
         Player.getBoard().printBoard();
+
+        for(Player player: players)
+            player.setPlayerNodeBoard(Player.getBoard());
         
         do
         {
@@ -46,11 +49,11 @@ public class BlockIt
 
                 Player player = players.get(currentPlayer);
 
-                Player.node.setHeuristic(player.getNewHeuristic());
+                //Player.getGameNode().setHeuristic(player.getNewHeuristic());
 
                 System.out.println(player.getName() + " Player's turn\n");
     
-                if(player.getDifficulty() == 1) //Human
+                if(!player.isBot()) //Human
                 {
                     int option;
     
@@ -123,6 +126,8 @@ public class BlockIt
                                 do
                                 {
                                     System.out.println("Type the direction of the barrier ('v' for vertical or 'h' for horizontal)");
+
+                                    scanner.nextLine(); //To flush I guess...
 
                                     String line = scanner.nextLine();
 
@@ -198,8 +203,8 @@ public class BlockIt
             }
         }
 
-        if(Player.getNode() == null)
-            Player.setNode(new GameNode(null, 0, 0, "root", getCurrentPlayer().getNewHeuristic(), new GameBoard(charBoard, pos)));
+        if(Player.getGameNode() == null)
+            Player.setGameNode(new GameNode(null, 0, 0, "root", null, new GameBoard(charBoard, pos)));
         else
             Player.setBoard(new GameBoard(charBoard, pos));
     }

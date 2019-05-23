@@ -19,7 +19,7 @@ public class Suite
         BlockIt.setPlayers(players);
         BlockIt.buildBoard();
 
-        ArrayList<Node> children = Player.getNode().expandNodeWithBarrier(BlockIt.getCurrentPlayer());
+        ArrayList<Node> children = Player.getGameNode().expandNodeWithBarrier(BlockIt.getCurrentPlayer().getPosition());
 
         for(Node n: children)
             System.out.println(n.getOperator());

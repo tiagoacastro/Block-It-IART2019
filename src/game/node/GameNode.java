@@ -62,32 +62,38 @@ public class GameNode extends Node
             
         board = node.getGameBoard().cloneGameBoard();
     }
+
+    public GameNode(String operator, Heuristic heuristic, GameBoard board)
+    {
+        super(operator, heuristic);
+
+        this.board = board;
+    }
     
 
     /**
      * Expands a node, i.e, returns its possible children.
      * @return The children of this node.
      */
-    public ArrayList<Node> expandNode(Player player)
+    public ArrayList<Node> expandNode(int[] playerPos)
     {
         ArrayList<Node> nodeList = new ArrayList<Node>();
-        int[] currentPlayerCoords = board.getPlayerPosition(player.getColor());
 
-        if(this.board.validateMoveDown(currentPlayerCoords))
-            nodeList.add(new GameNode(this,  "move down " + currentPlayerCoords[0] + " " 
-                + currentPlayerCoords[1], this.board.moveDown(currentPlayerCoords)));
+        if(this.board.validateMoveDown(playerPos))
+            nodeList.add(new GameNode(this,  "move down " + playerPos[0] + " " 
+                + playerPos[1], this.board.moveDown(playerPos)));
 
-        if(this.board.validateMoveUp(currentPlayerCoords))
-            nodeList.add(new GameNode(this,  "move up " + currentPlayerCoords[0] + " " 
-                + currentPlayerCoords[1], this.board.moveUp(currentPlayerCoords)));  
+        if(this.board.validateMoveUp(playerPos))
+            nodeList.add(new GameNode(this,  "move up " + playerPos[0] + " " 
+                + playerPos[1], this.board.moveUp(playerPos)));  
 
-        if(this.board.validateMoveLeft(currentPlayerCoords))
-            nodeList.add(new GameNode(this,  "move left " + currentPlayerCoords[0] + " " 
-                + currentPlayerCoords[1], this.board.moveLeft(currentPlayerCoords)));    
+        if(this.board.validateMoveLeft(playerPos))
+            nodeList.add(new GameNode(this,  "move left " + playerPos[0] + " " 
+                + playerPos[1], this.board.moveLeft(playerPos)));    
 
-        if(this.board.validateMoveRight(currentPlayerCoords))
-            nodeList.add(new GameNode(this,  "move right " + currentPlayerCoords[0] + " " 
-                + currentPlayerCoords[1], this.board.moveRight(currentPlayerCoords))); 
+        if(this.board.validateMoveRight(playerPos))
+            nodeList.add(new GameNode(this,  "move right " + playerPos[0] + " " 
+                + playerPos[1], this.board.moveRight(playerPos))); 
 
         return nodeList;
     }
@@ -96,9 +102,9 @@ public class GameNode extends Node
      * Expands a node, i.e, returns its possible children, including barrier placements.
      * @return The children of this node.
      */
-    public ArrayList<Node> expandNodeWithBarrier(Player player)
+    public ArrayList<Node> expandNodeWithBarrier(int[] playerPos)
     {
-        ArrayList<Node> nodeList = expandNode(player);
+        ArrayList<Node> nodeList = expandNode(playerPos);
 
         GameBoard newBoard;
 

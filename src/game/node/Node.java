@@ -87,16 +87,22 @@ public abstract class Node
         this.pathCost = 1;
         this.parentNode = parentNode;
         this.operator = operator;
-        this.heuristic = parentNode.getHeuristic();
+        this.heuristic = parentNode.getHeuristic().getNewHeuristic();
 
         this.id = parentNode.id + " -> " + operator;
+    }
+
+    public Node(String operator, Heuristic heuristic)
+    {
+        this.operator = operator;
+        this.heuristic = heuristic;
     }
 
     /**
      * Expands a node, i.e, returns its possible children.
      * @return The children of this node.
      */
-    public abstract ArrayList<Node> expandNode(Player player);
+    public abstract ArrayList<Node> expandNode(int[] playerPos);
 
     /**
      * Executes the moves indicated by the operators in the Solution array.
@@ -140,16 +146,16 @@ public abstract class Node
      * @return
      */
 
-    public static Node max(Node n, Node m) {
+    public static int max(Node n, Node m) {
         if (n == null) {
-            return m;
+            return 1;
         } 
 
         if (m == null) {
-            return n;
+            return 0;
         }
 
-        return (n.heuristic.getValue() > m.heuristic.getValue() ? n : m);
+        return (n.heuristic.getValue() > m.heuristic.getValue() ? 0 : 1);
     }
 
     /**
@@ -159,16 +165,16 @@ public abstract class Node
      * @return
      */
 
-    public static Node min(Node n, Node m) {
+    public static int min(Node n, Node m) {
         if (n == null) {
-            return m;
+            return 1;
         } 
 
         if (m == null) {
-            return n;
+            return 0;
         }
 
-        return (n.heuristic.getValue() < m.heuristic.getValue() ? n : m);
+        return (n.heuristic.getValue() < m.heuristic.getValue() ? 0 : 1);
     }
 
 

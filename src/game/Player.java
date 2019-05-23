@@ -4,30 +4,28 @@ import game.GameBoard;
 import game.heuristics.*;
 import game.node.*;
 
-import java.util.ArrayList;
-
 public class Player
 {
-    protected static int MAX_BARRIERS;
-    protected static GameNode node;
+    private static int MAX_BARRIERS;
+    private static GameNode gameNode;
 
-    protected int[] position;
-    protected int barriers;
-    protected int difficulty;
-    protected char color;
+    private boolean bot;
+    private PlayerNode playerNode;
 
     public Player(int difficulty, int[] position, char color)
     {
-        this.position = position;
-        this.barriers = MAX_BARRIERS;
-        this.difficulty = difficulty;
-        this.color = color;
+        playerNode = new PlayerNode("root", getNewHeuristic(difficulty, color), 
+            gameNode.getGameBoard().cloneGameBoard(), position, color, MAX_BARRIERS);
+
+        if(difficulty > 1)
+            bot = true;
+        else
+            bot = false;
     }
 
     public Player(int difficulty, char color)
     {
-        this.difficulty = difficulty;
-        this.color = color;
+        int[] position = new int[2];
 
         switch(color)
         {
@@ -51,12 +49,20 @@ public class Player
                 System.out.println("Unsuported color " + color);
                 position = new int[]{0, 0};
         }
+
+        if(difficulty > 1)
+            bot = true;
+        else
+            bot = false;
+
+        playerNode = new PlayerNode("root", getNewHeuristic(difficulty, color), 
+            null, position, color, MAX_BARRIERS);
     }
 
     //Bot function
     public void play()
     {
-        Node newNode = minimax(node, 0, true);
+        Node newNode = playerNode.minimax(0, true);
 
         if(newNode == null)
         {
@@ -84,27 +90,27 @@ public class Player
     public boolean move(String move)
     {
         GameBoard newBoard;
-        int[] newPosition = position.clone();
+        int[] newPosition = playerNode.getPosition().clone();
 
         switch(move)
         {
             case "up":
-                newBoard = node.getGameBoard().moveUp(position);
+                newBoard = gameNode.getGameBoard().moveUp(playerNode.getPosition());
                 newPosition[0] -= 2;
                 break;
 
             case "down":
-                newBoard = node.getGameBoard().moveDown(position);
+                newBoard = gameNode.getGameBoard().moveDown(playerNode.getPosition());
                 newPosition[0] += 2;
                 break;
 
             case "left":    
-                newBoard = node.getGameBoard().moveLeft(position);
+                newBoard = gameNode.getGameBoard().moveLeft(playerNode.getPosition());
                 newPosition[1] -= 2;
                 break;
 
             case "right":
-                newBoard = node.getGameBoard().moveRight(position);
+                newBoard = gameNode.getGameBoard().moveRight(playerNode.getPosition());
                 newPosition[1] += 2;
                 break;
 
@@ -115,8 +121,9 @@ public class Player
 
         if(newBoard != null)
         {
-            node.setGameBoard(newBoard);
-            this.position = newPosition;
+            gameNode.setGameBoard(newBoard);
+            playerNode.setPosition(newPosition);
+            playerNode.setGameBoard(newBoard.cloneGameBoard());
             return true;
         }
         else
@@ -125,12 +132,13 @@ public class Player
 
     public boolean useBarrier(int x, int y, char direction)
     {
-        GameBoard newBoard = node.getGameBoard().placeBarrier(x, y, direction);
+        GameBoard newBoard = gameNode.getGameBoard().placeBarrier(x, y, direction);
 
         if(newBoard != null)
         {
-            node.setGameBoard(newBoard);
-            barriers--;
+            gameNode.setGameBoard(newBoard);
+            playerNode.setGameBoard(newBoard.cloneGameBoard());
+            playerNode.useBarrier();
             return true;
         }
         else
@@ -140,55 +148,34 @@ public class Player
         }
             
     }
-
+    
     public boolean isWinner()
     {
-        return isWinner(this.color, this.position);
-    }
-
-    public static boolean isWinner(char playerColor, int[] playerPosition)
-    {
-        switch(playerColor)
-        {
-            case 'R':
-                return playerPosition[0] == GameBoard.getBoardSize() - 1;
-
-            case 'B':
-                return playerPosition[0] == 0;
-
-            case 'G':
-                return playerPosition[1] == 0;
-
-            case 'Y':
-                return playerPosition[1] == GameBoard.getBoardSize() - 1;
-
-            default:
-                return false;
-        }
+        return playerNode.isWinner();
     }
 
     public String getName()
     {
-        switch(color)
+        switch(playerNode.getColor())
         {
             case 'R':
-                return "Red";
+                return "Red ";
                 
             case 'Y':
-                return "Yellow";
+                return "Yellow ";
 
             case 'B':
-                return "Blue";
+                return "Blue ";
 
             case 'G':
-                return "Green";
+                return "Green ";
 
             default:
-                return "Unknown";
+                return "Unknown ";
         }
     }
 
-    public Heuristic getNewHeuristic()
+    public Heuristic getNewHeuristic(int difficulty, char color)
     {
         switch(difficulty)
         {
@@ -202,28 +189,29 @@ public class Player
                 return new PathHeuristic(color);
 
             default:
+                System.out.println("Unknown difficulty");
                 return null;
         }
     }
 
     public boolean equals(Player p)
     {
-        return p.getColor() == color;
+        return p.getColor() == playerNode.getColor();
     }
 
-    public int getDifficulty()
+    public boolean isBot()
     {
-        return difficulty;
+        return bot;
     }
 
     public int getBarriers()
     {
-        return barriers;
+        return playerNode.getBarriers();
     }
 
     public int[] getPosition()
     {
-        return position;
+        return playerNode.getPosition();
     }
 
     public static int getMaxBarriers()
@@ -233,17 +221,22 @@ public class Player
 
     public char getColor()
     {
-        return color;
+        return playerNode.getColor();
     }
 
     public static GameBoard getBoard()
     {
-        return node.getGameBoard();
+        return gameNode.getGameBoard();
     }
 
-    public static GameNode getNode()
+    public GameBoard getPlayerBoard()
     {
-        return node;
+        return playerNode.getGameBoard();
+    }
+
+    public static GameNode getGameNode()
+    {
+        return gameNode;
     }
 
     public static void setMaxBarriers(int maxBarriers)
@@ -251,151 +244,19 @@ public class Player
         MAX_BARRIERS = maxBarriers;
     }
 
-    public static void setNode(GameNode node)
+    public static void setGameNode(GameNode node)
     {
-        Player.node = node;
+        Player.gameNode = node;
     }
 
     public static void setBoard(GameBoard gameBoard)
     {
-        node.setGameBoard(gameBoard);
+        gameNode.setGameBoard(gameBoard);
     }
 
-    /**
-     * Determines the player bot's next move through the use of the minimax algorithm
-     * @param node
-     * @param depth
-     * @param maximizingPlayer
-     * @return
-     */
-    public GameNode minimax(GameNode node, int depth, boolean maximizingPlayer) {
-        return minimaxAux(node, depth, null, null, maximizingPlayer);
-    }
-
-    /**
-     * Determines the player bot's next move through the use of the minimax algorithm with alpha beta pruning
-     * @param node
-     * @param depth
-     * @param alpha
-     * @param beta
-     * @param maximizingPlayer
-     * @return
-     */
-    public GameNode alphaBeta(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
-        return minimaxAux(node, depth, alpha, beta, maximizingPlayer);
-    }
-
-    /**
-     * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
-     * @param node
-     * @param depth
-     * @param maximizingPlayer
-     * @return
-     */
-    private GameNode minimaxAux(GameNode father, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
-
-        GameNode value = null;
-        boolean isAlphaBeta = (alpha != null && beta != null), returnFlag = false;
-        ArrayList<Node> childNodes;
-
-         // todo check search depth and isTerminal
-        if (depth >= Node.MAX_SEARCH_DEPTH) 
-            returnFlag = true;
-
-        if(isWinner(color, father.getGameBoard().getPlayerPosition(color)))
-        {
-            value = new GameNode(father);
-            value.getHeuristic().setValue(100);
-            returnFlag = true;
-        }
-        else
-            if(isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor())))
-            {
-                value = new GameNode(father);
-                value.getHeuristic().setValue(-100);
-                returnFlag = true;
-            }        
-
-        if(returnFlag)
-            if(value == null)
-            {
-                value = new GameNode(father);
-                value.calculateHeuristic(color);
-                return value;
-            }
-            else
-                return value;
-
-        if(barriers > 0)
-            childNodes = father.expandNodeWithBarrier(this);
-        else
-            childNodes = father.expandNode(this);
-
-            System.out.println("--------------------------");
-        for(Node n: childNodes)
-        {
-            ((GameNode) n).calculateHeuristic(color);
-            System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
-        }
-            
-        System.out.println("\n");
-
-        if (maximizingPlayer) 
-        {
-            for (Node child : childNodes) 
-            {
-                //((GameNode) child).calculateHeuristic(color);
-
-                /*
-                System.out.print("Before: ");
-
-                if(value != null)
-                    System.out.print(value.getHeuristic().getValue());
-                else
-                    System.out.print("null");
-
-                GameNode mmChild = minimaxAux((GameNode) child, depth + 1, alpha, beta, false);
-
-                System.out.print(" Contender: " + mmChild.getHeuristic().getValue());
-
-                if(value == null || mmChild.getHeuristic().getValue() > value.getHeuristic().getValue())
-                {
-                    System.out.print(" (Replaced) ");
-                    value = mmChild;
-                }
-                    
-                System.out.println(" After: " + value.getHeuristic().getValue()); */
-
-                value = (GameNode) Node.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
-
-                if (isAlphaBeta) 
-                {
-                    alpha = (GameNode) Node.max(alpha, value);
-
-                    if (alpha.ge(beta)) 
-                        break;
-                }
-            }  
-        } 
-        else 
-        {
-            for (Node child : childNodes) 
-            {
-                //((GameNode) child).calculateHeuristic(color);
-                value = (GameNode) Node.min(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, true));
-
-                if(isAlphaBeta) 
-                {
-                    beta = (GameNode) Node.min(beta, value);
-
-                    if (beta.ge(alpha)) //Changed from alpha.ge(beta)
-                        break;
-                } 
-            }
-        }
-
-        return value;
-        
+    public void setPlayerNodeBoard(GameBoard gameBoard)
+    {
+        playerNode.setGameBoard(gameBoard.cloneGameBoard());
     }
 
 }

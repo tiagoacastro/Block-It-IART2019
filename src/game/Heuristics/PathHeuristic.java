@@ -41,13 +41,13 @@ public class PathHeuristic extends Heuristic
             
             foundSolution = false;
     
-            activeNodes.add(new PlayerNode(null, 0, 1, "root", null, board, board.getPlayerPosition(color), color));
+            activeNodes.add(new PlayerNode(null, 0, 1, "root", this, board, board.getPlayerPosition(color), color));
     
             while (!activeNodes.isEmpty())
             {
                 currentNode = activeNodes.peek();
     
-                if(Player.isWinner(currentNode.getColor(), currentNode.getPosition()))
+                if(currentNode.isWinner())
                 {
                     currentNode.traceSolutionUp();
                     foundSolution = true;
@@ -59,7 +59,7 @@ public class PathHeuristic extends Heuristic
     
                 children = currentNode.expandPlayerNode();
     
-                for (Node child : children)
+                for (PlayerNode child : children)
                 {
                     for (String id : visitedNodes)
                         if (id.equals(child.getId()))
@@ -74,7 +74,7 @@ public class PathHeuristic extends Heuristic
                         continue;
                     }
     
-                    for (Node n : activeNodes)
+                    for (PlayerNode n : activeNodes)
                         if (n.getId().equals(child.getId())) {
                             active = true;
                             break;
@@ -113,7 +113,7 @@ public class PathHeuristic extends Heuristic
             currentPlayerValue--;
 
 
-        value = GameBoard.getPlayBoardSize() - currentPlayerValue;
+        value = GameBoard.getBoardSize() - currentPlayerValue;
     }
 
     /**
