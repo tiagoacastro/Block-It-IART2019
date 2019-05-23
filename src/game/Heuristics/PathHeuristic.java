@@ -107,12 +107,8 @@ public class PathHeuristic extends Heuristic
             }
                 
         }
-        
-        if(!move) //Penalty for barrier
-            currentPlayerValue++;
 
-
-        value = GameBoard.getBoardSize() - currentPlayerValue;
+        value = (GameBoard.getBoardSize() - currentPlayerValue);
     }
 
     /**

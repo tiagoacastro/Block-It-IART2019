@@ -45,7 +45,7 @@ public class GameBoard
 
         if (!validateMoveRight(coords)) 
         {
-            System.out.println("Can't move right: (" + coords[0] + "," + coords[1] + ")");
+            //System.out.println("Can't move right: (" + coords[0] + "," + coords[1] + ")");
             return null;
         } 
         else 
@@ -89,7 +89,7 @@ public class GameBoard
 
         if(!validateMoveLeft(coords))
         {
-            System.out.println("Can't move left: (" + coords[0] + "," + coords[1] + ")");
+            //System.out.println("Can't move left: (" + coords[0] + "," + coords[1] + ")");
             return null;
         }
         else
@@ -132,7 +132,7 @@ public class GameBoard
 
         if(!validateMoveUp(coords))
         {
-            System.out.println("Can't move up: (" + coords[0] + "," + coords[1] + ")");
+            //System.out.println("Can't move up: (" + coords[0] + "," + coords[1] + ")");
             return null;
         }
         else
@@ -175,7 +175,7 @@ public class GameBoard
 
         if(!validateMoveDown(coords))
         {
-            System.out.println("Can't move down: (" + coords[0] + "," + coords[1] + ")");
+            //System.out.println("Can't move down: (" + coords[0] + "," + coords[1] + ")");
             return null;
         }
         else
