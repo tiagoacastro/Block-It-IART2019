@@ -56,7 +56,8 @@ public class PathHeuristic extends Heuristic
                 activeNodes.poll();
                 visitedNodes.add(currentNode.getId());
     
-                children = currentNode.expandPlayerNode();
+
+                children = currentNode.expandPlayerNode(currentNode.getColor() == color);
     
                 for (PlayerNode child : children)
                 {
