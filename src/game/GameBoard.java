@@ -253,6 +253,12 @@ public class GameBoard
     {
         if(x % 2 == 0 || y <= 0 || y >= BOARD_SIZE - 1 || board[y - 1][x] != ' ' || board[y + 1][x] != ' ')
             return null;
+
+        if(x > 0 && board[y][x - 1] != ' ')
+            return null;
+
+        if(x < BOARD_SIZE - 1 && board[y][x + 1] != ' ')
+            return null;
         
         char[][] newBoard = copyBoard(board);
 
@@ -266,6 +272,12 @@ public class GameBoard
     public GameBoard placeHorizontalBarrier(int x, int y)
     {
         if(y % 2 == 0 || x <= 0 || x >= BOARD_SIZE - 1 || board[y][x - 1] != ' ' || board[y][x + 1] != ' ')
+            return null;
+
+        if(y > 0 && board[y - 1][x] != ' ')
+            return null;
+
+        if(y < BOARD_SIZE - 1 && board[y + 1][x] != ' ')
             return null;
 
         char[][] newBoard = copyBoard(board);
