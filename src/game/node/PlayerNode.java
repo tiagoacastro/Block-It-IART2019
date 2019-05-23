@@ -210,7 +210,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             if(value == null)
             {
                 value = new PlayerNode(father);
-                value.calculateHeuristic(board, color);
+                value.calculateHeuristic(color);
                 return value;
             }
             else
@@ -222,7 +222,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         for(PlayerNode n: childNodes)
         {
-            n.calculateHeuristic(board, color);
+            n.calculateHeuristic(color);
             System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
         }
             

@@ -186,7 +186,7 @@ public class GameNode extends Node
         return false; 
     }
 
-    public void calculateHeuristic(GameBoard board, char color) {
+    public void calculateHeuristic(char color) {
         this.heuristic.calculate(board, color, operator.split(" ")[0].equals("move"));
     }
 }
