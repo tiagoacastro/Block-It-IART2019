@@ -187,6 +187,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         PlayerNode value = null;
         boolean isAlphaBeta = (alpha != null && beta != null), returnFlag = false;
         ArrayList<PlayerNode> childNodes;
+        char playerColor = (maximizingPlayer ? color : BlockIt.getNextPlayer().getColor());
 
          // todo check search depth and isTerminal
         if (depth >= Node.MAX_SEARCH_DEPTH) 
@@ -210,7 +211,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             if(value == null)
             {
                 value = new PlayerNode(father);
-                value.calculateHeuristic(color);
+                value.calculateHeuristic(playerColor);
                 return value;
             }
             else
@@ -222,7 +223,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         for(PlayerNode n: childNodes)
         {
-            n.calculateHeuristic(color);
+            n.calculateHeuristic(playerColor);
             System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
         }
             
@@ -232,7 +233,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         {
             for (PlayerNode child : childNodes) 
             {
-                //((GameNode) child).calculateHeuristic(color);
+                //((GameNode) child).calculateHeuristic(playerColor);
 
                 /*
                 System.out.print("Before: ");
