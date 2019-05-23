@@ -14,7 +14,6 @@ import java.util.PriorityQueue;
  */
 public class PathHeuristic extends Heuristic
 {
-    private int[] position;
     private char color;
 
     public PathHeuristic(char color)

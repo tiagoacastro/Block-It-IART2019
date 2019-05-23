@@ -9,7 +9,7 @@ public abstract class Heuristic {
 	/**
 	 * The current value of the heuristic.
 	 */
-	public double value;
+	protected double value;
 
 	int r = Integer.MAX_VALUE;
 	int g = Integer.MAX_VALUE;
@@ -73,5 +73,15 @@ public abstract class Heuristic {
 		}
 
 		return false;
+	}
+
+	public double getValue()
+	{
+		return value;
+	}
+
+	public void setValue(double newValue)
+	{
+		value = newValue;
 	}
 }

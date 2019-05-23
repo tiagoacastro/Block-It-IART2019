@@ -305,7 +305,7 @@ public class GameBoard
      * @param board The board to be copied.
      * @return The cloned board.
      */
-    private char[][] copyBoard(char[][] board)
+    public char[][] copyBoard(char[][] board)
     {
         char newBoard[][] = new char[board.length][board[0].length];
 
@@ -313,6 +313,21 @@ public class GameBoard
             newBoard[i] = board[i].clone();
 
         return newBoard;
+    }
+
+    public int[][] copyPositions(int[][] pos)
+    {
+        int[][] newPos = new int[pos.length][pos[0].length];
+
+        for(int i = 0; i < pos.length; i++)
+            newPos[i] = pos[i].clone();
+
+        return newPos;
+    }
+
+    public GameBoard cloneGameBoard()
+    {
+        return new GameBoard(copyBoard(board), copyPositions(players));
     }
 
     /**

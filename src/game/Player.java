@@ -78,7 +78,7 @@ public class Player
             useBarrier(Integer.parseInt(operatorParams[3]), Integer.parseInt(operatorParams[2]), operatorParams[1].charAt(0));
 
         System.out.println(newNode.getOperator());
-        System.out.println(newNode.getHeuristic().value);
+        System.out.println(newNode.getHeuristic().getValue());
     }
 
     public boolean move(String move)
@@ -292,44 +292,52 @@ public class Player
      * @param maximizingPlayer
      * @return
      */
-    private GameNode minimaxAux(GameNode node, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
+    private GameNode minimaxAux(GameNode father, int depth, GameNode alpha, GameNode beta, boolean maximizingPlayer) {
 
         GameNode value = null;
-        boolean isAlphaBeta = (alpha != null && beta != null);
+        boolean isAlphaBeta = (alpha != null && beta != null), returnFlag = false;
         ArrayList<Node> childNodes;
 
          // todo check search depth and isTerminal
-        if (depth == Node.MAX_SEARCH_DEPTH) 
-        {
-            node.calculateHeuristic(color);
-            return node;
-        }
+        if (depth >= Node.MAX_SEARCH_DEPTH) 
+            returnFlag = true;
 
-        if(isWinner())
+        if(isWinner(color, father.getGameBoard().getPlayerPosition(color)))
         {
-            node.getHeuristic().value = 100;
-            return node;
+            value = new GameNode(father);
+            value.getHeuristic().setValue(100);
+            returnFlag = true;
         }
+        else
+            if(isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor())))
+            {
+                value = new GameNode(father);
+                value.getHeuristic().setValue(-100);
+                returnFlag = true;
+            }        
 
-        if(BlockIt.getNextPlayer().isWinner())
-        {
-            node.getHeuristic().value = -100;
-            return node;
-        }
+        if(returnFlag)
+            if(value == null)
+            {
+                value = new GameNode(father);
+                value.calculateHeuristic(color);
+                return value;
+            }
+            else
+                return value;
 
         if(barriers > 0)
-            childNodes = node.expandNodeWithBarrier(this);
+            childNodes = father.expandNodeWithBarrier(this);
         else
-            childNodes = node.expandNode(this);
+            childNodes = father.expandNode(this);
 
             System.out.println("--------------------------");
         for(Node n: childNodes)
         {
             ((GameNode) n).calculateHeuristic(color);
-            System.out.print(n.getOperator() + "-" + n.getHeuristic().value + " " ); 
+            System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
         }
             
-
         System.out.println("\n");
 
         if (maximizingPlayer) 
@@ -338,9 +346,27 @@ public class Player
             {
                 //((GameNode) child).calculateHeuristic(color);
 
-                value = (GameNode) Node.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
+                /*
+                System.out.print("Before: ");
 
-                System.out.println(value.getHeuristic().value);
+                if(value != null)
+                    System.out.print(value.getHeuristic().getValue());
+                else
+                    System.out.print("null");
+
+                GameNode mmChild = minimaxAux((GameNode) child, depth + 1, alpha, beta, false);
+
+                System.out.print(" Contender: " + mmChild.getHeuristic().getValue());
+
+                if(value == null || mmChild.getHeuristic().getValue() > value.getHeuristic().getValue())
+                {
+                    System.out.print(" (Replaced) ");
+                    value = mmChild;
+                }
+                    
+                System.out.println(" After: " + value.getHeuristic().getValue()); */
+
+                value = (GameNode) Node.max(value, minimaxAux((GameNode) child, depth + 1, alpha, beta, false));
 
                 if (isAlphaBeta) 
                 {

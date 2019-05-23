@@ -149,7 +149,7 @@ public abstract class Node
             return n;
         }
 
-        return (n.heuristic.value > m.heuristic.value ? n : m);
+        return (n.heuristic.getValue() > m.heuristic.getValue() ? n : m);
     }
 
     /**
@@ -168,7 +168,7 @@ public abstract class Node
             return n;
         }
 
-        return (n.heuristic.value < m.heuristic.value ? n : m);
+        return (n.heuristic.getValue() < m.heuristic.getValue() ? n : m);
     }
 
 
@@ -180,7 +180,7 @@ public abstract class Node
      */
 
     public boolean ge(Node b) {
-        return this.heuristic.value >= b.heuristic.value;
+        return this.heuristic.getValue() >= b.heuristic.getValue();
     }
 
     public String getId()

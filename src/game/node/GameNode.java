@@ -55,6 +55,15 @@ public class GameNode extends Node
         this.board = board;
     }
 
+    public GameNode(GameNode node)
+    {
+        super(node.getParentNode(), node.getDepth(), node.getPathCost(), node.getOperator(), 
+            node.getHeuristic().getNewHeuristic()); 
+            
+        board = node.getGameBoard().cloneGameBoard();
+    }
+    
+
     /**
      * Expands a node, i.e, returns its possible children.
      * @return The children of this node.
@@ -245,5 +254,4 @@ public class GameNode extends Node
     public void calculateHeuristic(char color) {
         this.heuristic.calculate(board, color, operator.split(" ")[0].equals("move"));
     }
-
 }
