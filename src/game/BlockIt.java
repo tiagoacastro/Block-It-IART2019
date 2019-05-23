@@ -504,6 +504,20 @@ public class BlockIt
         return ((nextPlayer = currentPlayer + 1) >= players.size() ? players.get(0) : players.get(nextPlayer));
     }
 
+    public static Player getPlayerAfter(char color)
+    {
+        for(int i = 0; i < players.size(); i++)
+            if(players.get(i).getColor() == color)
+            {
+                if(i == players.size() - 1)
+                    return players.get(0);
+                else
+                    return players.get(i + 1);
+            }
+
+        return null;
+    }
+
     public static void setPlayers(ArrayList<Player> list)
     {
         players = list;

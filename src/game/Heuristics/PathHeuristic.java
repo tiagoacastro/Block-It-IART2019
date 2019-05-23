@@ -25,90 +25,78 @@ public class PathHeuristic extends Heuristic
      * @param board The board to which the heuristic's value is calculated.
      * @param color The color of the player
      */
-    public void calculate(GameBoard board, char color, boolean move) {
+    public void calculate(GameBoard board, char playerColor, boolean move) 
+    {
+        double currentPlayerValue = AStar(board, playerColor), 
+            adversaryValue = AStar(board, BlockIt.getPlayerAfter(playerColor).getColor());
+
+        value = (GameBoard.getPlayBoardSize() - currentPlayerValue);
+    }
+
+    public double AStar(GameBoard board, char playerColor)
+    {
         PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<PlayerNode>();
         ArrayList<PlayerNode> children = new ArrayList<PlayerNode>();
         ArrayList<String> visitedNodes = new ArrayList<String>();
         PlayerNode currentNode;
         boolean active = false, visited = false, foundSolution;
-        int currentPlayerValue = 0, adversaryValue = 0;
+        int[] playerPos = board.getPlayerPosition(playerColor);
 
-        for(int i = 0; i < BlockIt.getPlayers().size(); i++)
+        Node.getSolution().clear();
+        Node.getSolution().trimToSize();
+        
+        foundSolution = false;
+
+        activeNodes.add(new PlayerNode(null, 0, 1, "root", this, board, playerPos, playerColor));
+
+        while (!activeNodes.isEmpty())
         {
-            Node.getSolution().clear();
-            Node.getSolution().trimToSize();
-            
-            foundSolution = false;
-    
-            activeNodes.add(new PlayerNode(null, 0, 1, "root", this, board, board.getPlayerPosition(color), color));
-    
-            while (!activeNodes.isEmpty())
+            currentNode = activeNodes.peek();
+
+            if(currentNode.isWinner())
             {
-                currentNode = activeNodes.peek();
-    
-                if(currentNode.isWinner())
-                {
-                    currentNode.traceSolutionUp();
-                    foundSolution = true;
-                    break;
-                }
-    
-                activeNodes.poll();
-                visitedNodes.add(currentNode.getId());
-    
-                children = currentNode.expandPlayerNode();
-    
-                for (PlayerNode child : children)
-                {
-                    for (String id : visitedNodes)
-                        if (id.equals(child.getId()))
-                        {
-                            visited = true;
-                            break;
-                        }
-    
-                    if (visited)
+                currentNode.traceSolutionUp();
+                foundSolution = true;
+                break;
+            }
+
+            activeNodes.poll();
+            visitedNodes.add(currentNode.getId());
+
+            children = currentNode.expandPlayerNode(true);
+
+            for (PlayerNode child : children)
+            {
+                for (String id : visitedNodes)
+                    if (id.equals(child.getId()))
                     {
-                        visited = false;
-                        continue;
+                        visited = true;
+                        break;
                     }
-    
-                    for (PlayerNode n : activeNodes)
-                        if (n.getId().equals(child.getId())) {
-                            active = true;
-                            break;
-                        }
-    
-                    if (!active)
-                        activeNodes.add((PlayerNode) child);
-    
-                    active = false;
+
+                if (visited)
+                {
+                    visited = false;
+                    continue;
                 }
-            }
 
-            if(foundSolution)
-            {
-                if(i == BlockIt.getPlayerIndex())
-                    currentPlayerValue = Node.getSolution().size();
-                else
-                    adversaryValue += Node.getSolution().size();
+                for (PlayerNode n : activeNodes)
+                    if (n.getId().equals(child.getId())) {
+                        active = true;
+                        break;
+                    }
 
-                continue;
-            }
-            else
-            {
-                if(i == BlockIt.getPlayerIndex())
-                    currentPlayerValue = Integer.MAX_VALUE;
-                else
-                    adversaryValue += Integer.MAX_VALUE;
+                if (!active)
+                    activeNodes.add((PlayerNode) child);
 
-                children.clear();
-                children.trimToSize();
+                active = false;
             }
-                
         }
 
-        value = (GameBoard.getBoardSize() - currentPlayerValue);
+        if(foundSolution)
+            return Node.getSolution().size();
+        else
+            return Integer.MAX_VALUE;
     }
 
     /**
