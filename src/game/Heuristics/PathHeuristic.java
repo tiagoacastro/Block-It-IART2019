@@ -30,6 +30,9 @@ public class PathHeuristic extends Heuristic
         double currentPlayerValue = AStar(board, playerColor), 
             adversaryValue = AStar(board, BlockIt.getPlayerAfter(playerColor).getColor());
 
+        if(!move)
+            currentPlayerValue++;
+
         value = (GameBoard.getPlayBoardSize() - currentPlayerValue);
     }
 
