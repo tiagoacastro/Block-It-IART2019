@@ -140,7 +140,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
-            child.minimaxAux(depth+1, false);
+            child.minimaxAux(depth, false);
 
             if(val == null || child.getValue() >= val)
             {
