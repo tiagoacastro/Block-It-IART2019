@@ -431,11 +431,11 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         switch(difficulty)
         {
             case 2:
-                //return new CompetitiveHeuristic();
-
-            case 3:
                 //return new DirectHeuristic();
 
+            case 3:
+                competitiveHeuristic();
+                break;
             case 4:
                 shortestPathHeuristic();
                 break;
@@ -456,14 +456,80 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         System.out.println("Value of " + color + ": " + value);
     }
 
-    public double competitiveHeuristic()
+    public double directHeuristic()
     {
         return 1;
     }
 
-    public double directHeuristic()
+    public void competitiveHeuristic()
     {
-        return 1;
+        Integer r = 0, g = 0, b = 0, y = 0;
+
+        System.out.println("\n\n" + board.getPlayers()[0][0] + " " + board.getPlayers()[0][1] + "\n\n");
+
+        if(board.getPlayers()[0][0] != -1)
+            r = GameBoard.getBoardSize() - board.getPlayers()[0][0];
+
+        if(board.getPlayers()[1][0] != -1)
+            g = board.getPlayers()[1][1];
+
+        if(board.getPlayers()[2][0] != -1)
+            b = board.getPlayers()[2][0];
+
+        if(board.getPlayers()[3][0] != -1)
+            y = GameBoard.getBoardSize() - board.getPlayers()[3][1];
+
+        char other = BlockIt.getPlayerAfter(color).getColor();
+        int mine, his;
+
+        if (win(other, r, g, b, y))
+            value = Double.MIN_VALUE;
+        else {
+            if (win(color, r, g, b, y))
+                value = Double.MAX_VALUE;
+            else {
+                mine = getVal(color, r, g, b, y);
+                his = getVal(other, r, g, b, y);
+
+                value = (double) (GameBoard.getBoardSize() - mine) - (GameBoard.getBoardSize() - his);
+            }
+        }
+
+
+    }
+
+    private int getVal(char color, Integer r, Integer g, Integer b, Integer y) {
+        int val = 0;
+        switch (color) {
+            case 'R':
+                val = r;
+                break;
+            case 'G':
+                val = g;
+                break;
+            case 'B':
+                val = b;
+                break;
+            case 'Y':
+                val = y;
+                break;
+        }
+        return val;
+    }
+
+    boolean win(char color, Integer r, Integer g, Integer b, Integer y){
+        switch(color) {
+            case 'R':
+                return r == 0;
+            case 'G':
+                return g == 0;
+            case 'B':
+                return b == 0;
+            case 'Y':
+                return y == 0;
+        }
+
+        return false;
     }
 
     public double AStar(char playerColor)
