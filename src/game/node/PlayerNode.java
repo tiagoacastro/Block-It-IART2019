@@ -13,6 +13,8 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
     private int barriers;
     private int difficulty;
     private Double value;
+    private Double alpha;
+    private Double beta;
 
     public PlayerNode(PlayerNode parentNode, int depth, int pathCost, String operator, GameBoard board,
         int difficulty, Double value, int[] position, char color, int barriers)
@@ -138,14 +140,26 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
-            child.minimaxAux(depth, null, null, false);
+            child.minimaxAux(depth+1, false);
 
             if(val == null || child.getValue() >= val)
             {
                 //System.out.print(" (New val = " + val + ") ");
                 op = child.getOperator();
                 val = child.getValue();
+                this.value = val;
             }
+
+            if(this.alpha == null || this.value >= this.alpha)
+            this.alpha = this.value;
+
+            System.out.println("(max) current alpha value: " + this.alpha);
+            System.out.println("(max) current beta value: " + this.beta);
+
+            if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                System.out.println("Branch cut in max player");
+                break;
+            } 
                 
         }
 
@@ -161,24 +175,24 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      * @param maximizingPlayer
      * @return
      */
-    public void alphaBeta(int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) 
+    public void alphaBeta(int depth, boolean maximizingPlayer) 
     {
-        minimaxAux(depth, alpha, beta, maximizingPlayer);
+        minimaxAux(depth, maximizingPlayer);
     }
 
     /**
-     * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
+     * Determines the player bot's next move through the use of the minimax algorithm, with alpha beta pruning 
      * @param node
      * @param depth
      * @param maximizingPlayer
      * @return
      */
-    private void minimaxAux(int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) 
+    private void minimaxAux(int depth, boolean maximizingPlayer) 
     {
-        boolean isAlphaBeta = (alpha != null && beta != null);
+        boolean isAlphaBeta = /*(alpha != null && beta != null)*/ true;
         ArrayList<PlayerNode> childNodes;
 
-        if (depth >= Node.MAX_SEARCH_DEPTH) 
+        if (depth >= Node.MAX_SEARCH_DEPTH)
         {
             if(depth % 2 == 0)
                 this.color = BlockIt.getPlayerAfter(color).getColor();
@@ -195,13 +209,13 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         for (PlayerNode child : childNodes) 
         {
-           //System.out.print(child.getOperator() + " => ");
+            //System.out.print(child.getOperator() + " => ");
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
             if(maximizingPlayer)
             {
-                child.minimaxAux(depth + 1, alpha, beta, false);
+                child.minimaxAux(depth + 1, false);
 
                 if(this.value == null || child.getValue() >= value)
                 {
@@ -209,19 +223,24 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
             
-                /*
+                
                 if (isAlphaBeta) 
                 {
-                    if(PlayerNode.max(alpha, value) == 1)
-                        alpha = value;
+                    if(this.alpha == null || this.value >= this.alpha)
+                    this.alpha = this.value;
 
-                    if (alpha.ge(beta)) 
+                    System.out.println("(max) current alpha value: " + this.alpha);
+                    System.out.println("(max) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in max player");
                         break;
-                } */
+                    } 
+                } 
             }
             else
             {
-                child.minimaxAux(depth + 1, alpha, beta, true);
+                child.minimaxAux(depth + 1, true);
 
                 if(this.value == null || child.getValue() <= value)
                 {
@@ -229,15 +248,19 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
 
-                /*
-                if(isAlphaBeta) 
+                if (isAlphaBeta) 
                 {
-                    if(PlayerNode.min(beta, value) == 1)
-                        beta = value;
+                    if(this.beta == null || this.value <= this.beta)
+                        this.beta = this.value;
 
-                    if (beta.ge(alpha)) //Changed from alpha.ge(beta)
+                    System.out.println("(min) current alpha value: " + this.alpha);
+                    System.out.println("(min) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in min player");
                         break;
-                } */
+                    } 
+                } 
             }
             
         }
@@ -404,12 +427,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         switch(difficulty)
         {
             case 2:
-                //return new CompetitiveHeuristic();
-
+                competitiveHeuristic();
+                break;
             case 3:
-                //return new DirectHeuristic();
-
-            case 4:
                 shortestPathHeuristic();
                 break;
 
@@ -432,14 +452,70 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         //System.out.println("Value of " + color + ": " + value);
     }
 
-    public double competitiveHeuristic()
+    public double directHeuristic()
     {
         return 1;
     }
 
-    public double directHeuristic()
+    public void competitiveHeuristic()
     {
-        return 1;
+        Integer r = 0, g = 0, b = 0, y = 0;
+
+        System.out.println("\n\n" + board.getPlayers()[0][0] + " " + board.getPlayers()[0][1] + "\n\n");
+
+        if(board.getPlayers()[0][0] != -1)
+            r = GameBoard.getBoardSize() - board.getPlayers()[0][0];
+
+        if(board.getPlayers()[1][0] != -1)
+            g = board.getPlayers()[1][1];
+
+        if(board.getPlayers()[2][0] != -1)
+            b = board.getPlayers()[2][0];
+
+        if(board.getPlayers()[3][0] != -1)
+            y = GameBoard.getBoardSize() - board.getPlayers()[3][1];
+
+        char other = BlockIt.getPlayerAfter(color).getColor();
+        int mine, his;
+
+        mine = getVal(color, r, g, b, y);
+        his = getVal(other, r, g, b, y);
+
+        value = (double) (GameBoard.getBoardSize() - mine) - (GameBoard.getBoardSize() - his);
+    }
+
+    private int getVal(char color, Integer r, Integer g, Integer b, Integer y) {
+        int val = 0;
+        switch (color) {
+            case 'R':
+                val = r;
+                break;
+            case 'G':
+                val = g;
+                break;
+            case 'B':
+                val = b;
+                break;
+            case 'Y':
+                val = y;
+                break;
+        }
+        return val;
+    }
+
+    boolean win(char color, Integer r, Integer g, Integer b, Integer y){
+        switch(color) {
+            case 'R':
+                return r == 0;
+            case 'G':
+                return g == 0;
+            case 'B':
+                return b == 0;
+            case 'Y':
+                return y == 0;
+        }
+
+        return false;
     }
 
     public double AStar(char playerColor)
