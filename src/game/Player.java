@@ -47,7 +47,7 @@ public class Player
     }
 
     //Bot function
-    public void play()
+    public void play(boolean test)
     {
         String op = playerNode.minimax(0, true);
 
@@ -64,7 +64,8 @@ public class Player
         else
             useBarrier(Integer.parseInt(operatorParams[3]), Integer.parseInt(operatorParams[2]), operatorParams[1].charAt(0));
 
-        System.out.println("\nChosen: " + op + "\n");
+            if(!test)
+                System.out.println("\nChosen: " + op + "\n");
     }
 
     public boolean move(String move)

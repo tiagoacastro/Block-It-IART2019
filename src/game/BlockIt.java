@@ -148,7 +148,7 @@ public class BlockIt
                     }
                 }
                 else //Bot
-                    player.play();
+                    player.play(false);
     
                 Player.getBoard().printBoard();
 
