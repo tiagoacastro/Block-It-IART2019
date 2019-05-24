@@ -13,6 +13,8 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
     private int barriers;
     private int difficulty;
     private Double value;
+    private Double alpha;
+    private Double beta;
 
     public PlayerNode(PlayerNode parentNode, int depth, int pathCost, String operator, GameBoard board,
         int difficulty, Double value, int[] position, char color, int barriers)
@@ -158,13 +160,25 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
-            child.minimaxAux(depth, null, null, false);
+            child.minimaxAux(depth+1, false);
 
             if(val == null || child.getValue() > val)
             {
                 op = child.getOperator();
                 val = child.getValue();
+                this.value = val;
             }
+
+            if(this.alpha == null || this.value >= this.alpha)
+            this.alpha = this.value;
+
+            System.out.println("(max) current alpha value: " + this.alpha);
+            System.out.println("(max) current beta value: " + this.beta);
+
+            if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                System.out.println("Branch cut in max player");
+                break;
+            } 
                 
         }
 
@@ -180,24 +194,24 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      * @param maximizingPlayer
      * @return
      */
-    public void alphaBeta(int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) 
+    public void alphaBeta(int depth, boolean maximizingPlayer) 
     {
-        minimaxAux(depth, alpha, beta, maximizingPlayer);
+        minimaxAux(depth, maximizingPlayer);
     }
 
     /**
-     * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
+     * Determines the player bot's next move through the use of the minimax algorithm, with alpha beta pruning 
      * @param node
      * @param depth
      * @param maximizingPlayer
      * @return
      */
-    private void minimaxAux(int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) 
+    private void minimaxAux(int depth, boolean maximizingPlayer) 
     {
-        boolean isAlphaBeta = (alpha != null && beta != null);
+        boolean isAlphaBeta = /*(alpha != null && beta != null)*/ true;
         ArrayList<PlayerNode> childNodes;
 
-        if (depth >= Node.MAX_SEARCH_DEPTH || isWinner() || isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor()))) // reached max depth || we won || the other player won 
+        if (depth >= Node.MAX_SEARCH_DEPTH)
         {
             if(depth % 2 == 0)
                 this.color = BlockIt.getPlayerAfter(color).getColor();
@@ -222,13 +236,13 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         for (PlayerNode child : childNodes) 
         {
-            System.out.print(child.getOperator() + " => ");
+            //System.out.print(child.getOperator() + " => ");
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
             if(maximizingPlayer)
             {
-                child.minimaxAux(depth + 1, alpha, beta, false);
+                child.minimaxAux(depth + 1, false);
 
                 if(this.value == null || child.getValue() >= value)
                 {
@@ -236,19 +250,24 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
             
-                /*
+                
                 if (isAlphaBeta) 
                 {
-                    if(PlayerNode.max(alpha, value) == 1)
-                        alpha = value;
+                    if(this.alpha == null || this.value >= this.alpha)
+                    this.alpha = this.value;
 
-                    if (alpha.ge(beta)) 
+                    System.out.println("(max) current alpha value: " + this.alpha);
+                    System.out.println("(max) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in max player");
                         break;
-                } */
+                    } 
+                } 
             }
             else
             {
-                child.minimaxAux(depth + 1, alpha, beta, true);
+                child.minimaxAux(depth + 1, true);
 
                 if(this.value == null || child.getValue() <= value)
                 {
@@ -256,15 +275,19 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
 
-                /*
-                if(isAlphaBeta) 
+                if (isAlphaBeta) 
                 {
-                    if(PlayerNode.min(beta, value) == 1)
-                        beta = value;
+                    if(this.beta == null || this.value <= this.beta)
+                        this.beta = this.value;
 
-                    if (beta.ge(alpha)) //Changed from alpha.ge(beta)
+                    System.out.println("(min) current alpha value: " + this.alpha);
+                    System.out.println("(min) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in min player");
                         break;
-                } */
+                    } 
+                } 
             }
             
         }
@@ -456,7 +479,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         value = (GameBoard.getPlayBoardSize() - currentPlayerValue) - (GameBoard.getPlayBoardSize() - adversaryValue);
 
-        System.out.println("Value of " + color + ": " + value);
+        //System.out.println("Value of " + color + ": " + value);
     }
 
     public double competitiveHeuristic()
