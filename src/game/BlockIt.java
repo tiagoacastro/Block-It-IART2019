@@ -49,7 +49,7 @@ public class BlockIt
 
                 Player player = players.get(currentPlayer);
 
-                System.out.println(player.getName() + " Player's turn\n");
+                System.out.println(player.getName() + " Player's turn: " + player.getBarriers() + "/" + Player.getMaxBarriers());
     
                 if(player.getDifficulty() == 1) //Human
                 {
@@ -98,6 +98,7 @@ public class BlockIt
                                     }
                                     catch(InputMismatchException e)
                                     {
+                                        scanner.nextLine();
                                         System.out.println("Invalid Input");
                                         continue;
                                     }
@@ -115,6 +116,7 @@ public class BlockIt
                                     }
                                     catch(InputMismatchException e)
                                     {
+                                        scanner.nextLine();
                                         System.out.println("Invalid Input");
                                         continue;
                                     }
@@ -440,7 +442,6 @@ public class BlockIt
         (
             "- The first player who gets across the board, reaching the respective color's line, wins the game.\n"
             + "- This is a turn based game. At each turn you have two options: 'Move' or 'Put a barrier'.\n"
-            + "- On every turn you'll always have a move available. If another player is blocking your only way to move, you can pass through him.\n"
             + "- The player can place a barrier only if he has any available.\n"
         );
     }
@@ -473,6 +474,7 @@ public class BlockIt
             }
             catch(InputMismatchException e)
             {
+                scanner.nextLine();
                 option = 0;
             }
         }

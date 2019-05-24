@@ -64,7 +64,7 @@ public class Player
         else
             useBarrier(Integer.parseInt(operatorParams[3]), Integer.parseInt(operatorParams[2]), operatorParams[1].charAt(0));
 
-        System.out.println("\nChosen:" + op);
+        System.out.println("\nChosen: " + op + "\n");
     }
 
     public boolean move(String move)
@@ -133,7 +133,7 @@ public class Player
     
     public boolean isWinner()
     {
-        return playerNode.isWinner();
+        return playerNode.isWinner(playerNode.getColor());
     }
 
     public String getName()
