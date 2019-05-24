@@ -49,11 +49,9 @@ public class BlockIt
 
                 Player player = players.get(currentPlayer);
 
-                //Player.getGameNode().setHeuristic(player.getNewHeuristic());
-
                 System.out.println(player.getName() + " Player's turn\n");
     
-                if(!player.isBot()) //Human
+                if(player.getDifficulty() == 1) //Human
                 {
                     int option;
     
@@ -204,7 +202,7 @@ public class BlockIt
         }
 
         if(Player.getGameNode() == null)
-            Player.setGameNode(new GameNode(null, 0, 0, "root", null, new GameBoard(charBoard, pos)));
+            Player.setGameNode(new GameNode(null, 0, 0, "root", new GameBoard(charBoard, pos)));
         else
             Player.setBoard(new GameBoard(charBoard, pos));
     }
