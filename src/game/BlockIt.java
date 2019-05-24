@@ -49,11 +49,9 @@ public class BlockIt
 
                 Player player = players.get(currentPlayer);
 
-                //Player.getGameNode().setHeuristic(player.getNewHeuristic());
-
-                System.out.println(player.getName() + " Player's turn\n");
+                System.out.println(player.getName() + " Player's turn: " + player.getBarriers() + "/" + Player.getMaxBarriers());
     
-                if(!player.isBot()) //Human
+                if(player.getDifficulty() == 1) //Human
                 {
                     int option;
     
@@ -100,6 +98,7 @@ public class BlockIt
                                     }
                                     catch(InputMismatchException e)
                                     {
+                                        scanner.nextLine();
                                         System.out.println("Invalid Input");
                                         continue;
                                     }
@@ -117,6 +116,7 @@ public class BlockIt
                                     }
                                     catch(InputMismatchException e)
                                     {
+                                        scanner.nextLine();
                                         System.out.println("Invalid Input");
                                         continue;
                                     }
@@ -204,7 +204,7 @@ public class BlockIt
         }
 
         if(Player.getGameNode() == null)
-            Player.setGameNode(new GameNode(null, 0, 0, "root", null, new GameBoard(charBoard, pos)));
+            Player.setGameNode(new GameNode(null, 0, 0, "root", new GameBoard(charBoard, pos)));
         else
             Player.setBoard(new GameBoard(charBoard, pos));
     }
@@ -305,15 +305,13 @@ public class BlockIt
                 + "+---------------+\n"
                 + "| 1 - Human     |\n"
                 + "+---------------+\n"
-                + "| 2 - Easy      |\n"
+                + "| 2 - Normal    |\n"
                 + "+---------------+\n"
-                + "| 3 - Normal    |\n"
-                + "+---------------+\n"
-                + "| 4 - Hard      |\n"
+                + "| 3 - Hard      |\n"
                 + "+---------------+\n"
             );
 
-            option = getOption(4);
+            option = getOption(3);
 
             players.add(new Player(option, colors[colorOption - 1]));
         }
@@ -444,7 +442,6 @@ public class BlockIt
         (
             "- The first player who gets across the board, reaching the respective color's line, wins the game.\n"
             + "- This is a turn based game. At each turn you have two options: 'Move' or 'Put a barrier'.\n"
-            + "- On every turn you'll always have a move available. If another player is blocking your only way to move, you can pass through him.\n"
             + "- The player can place a barrier only if he has any available.\n"
         );
     }
@@ -477,6 +474,7 @@ public class BlockIt
             }
             catch(InputMismatchException e)
             {
+                scanner.nextLine();
                 option = 0;
             }
         }

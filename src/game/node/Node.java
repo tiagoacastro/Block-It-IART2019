@@ -2,8 +2,6 @@ package game.node;
 
 import java.util.ArrayList;
 
-import game.heuristics.*;
-
 /**
  * Represents a regular node in a search problem.
  */
@@ -13,7 +11,7 @@ public abstract class Node
     /**
      * Determines minimax's max search depth
      */
-    public static int MAX_SEARCH_DEPTH = 5;
+    public static int MAX_SEARCH_DEPTH = 2;
 
     /**
      * The parent node of this node.
@@ -42,11 +40,6 @@ public abstract class Node
     protected static ArrayList<String> solution = new ArrayList<String>();
 
     /**
-     * Heuristic used to calculate the best path
-     */
-    protected Heuristic heuristic; 
-
-    /**
      * Id of the node
      */
     protected String id;
@@ -60,13 +53,12 @@ public abstract class Node
      * @param searchOption This node's search option.
      * @param heuristic This node's heuristic.
      */
-    public Node(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic)
+    public Node(Node parentNode, int depth, int pathCost, String operator)
     {
         this.parentNode = parentNode;
         this.depth = depth;
         this.pathCost = pathCost;
         this.operator = operator;
-        this.heuristic = heuristic;
 
         if(parentNode == null)
             this.id = operator;
@@ -86,15 +78,13 @@ public abstract class Node
         this.pathCost = 1;
         this.parentNode = parentNode;
         this.operator = operator;
-        this.heuristic = parentNode.getHeuristic().getNewHeuristic();
 
         this.id = parentNode.id + " -> " + operator;
     }
 
-    public Node(String operator, Heuristic heuristic)
+    public Node(String operator)
     {
         this.operator = operator;
-        this.heuristic = heuristic;
     }
 
     /**
@@ -138,56 +128,6 @@ public abstract class Node
         return solution;
     }
 
-    /**
-     * Determines the greater of two nodes, in regards to the heuristic value
-     * @param n
-     * @param m
-     * @return
-     */
-
-    public static int max(Node n, Node m) {
-        if (n == null) {
-            return 1;
-        } 
-
-        if (m == null) {
-            return 0;
-        }
-
-        return (n.heuristic.getValue() > m.heuristic.getValue() ? 0 : 1);
-    }
-
-    /**
-     * 
-     * @param n
-     * @param m
-     * @return
-     */
-
-    public static int min(Node n, Node m) {
-        if (n == null) {
-            return 1;
-        } 
-
-        if (m == null) {
-            return 0;
-        }
-
-        return (n.heuristic.getValue() < m.heuristic.getValue() ? 0 : 1);
-    }
-
-
-    /**
-     * Checks if the heuristic value of node a is greater than or equal to that of node b
-     * @param a
-     * @param b
-     * @return
-     */
-
-    public boolean ge(Node b) {
-        return this.heuristic.getValue() >= b.heuristic.getValue();
-    }
-
     public String getId()
     {
         return id;
@@ -206,16 +146,6 @@ public abstract class Node
     public String getOperator()
     {
         return operator;
-    }
-
-    public Heuristic getHeuristic()
-    {
-        return heuristic;
-    }
-
-    public void setHeuristic(Heuristic h)
-    {
-        heuristic = h;
     }
 
     public void setPathCost(int cost)

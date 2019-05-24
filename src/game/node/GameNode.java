@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import game.BlockIt;
 import game.GameBoard;
-import game.heuristics.Heuristic;
 
 /**
  * Represents an instance of a node in a search graph of a solution for a level in the game.
@@ -32,9 +31,9 @@ public class GameNode extends Node
      * @param moves The number of mobes performed to get to this node.
      * @param board The state of the board in this node.
      */
-    public GameNode(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic, GameBoard board)
+    public GameNode(Node parentNode, int depth, int pathCost, String operator, GameBoard board)
     {
-        super(parentNode, depth, pathCost, operator, heuristic);
+        super(parentNode, depth, pathCost, operator);
 
         this.board = board;
     }
@@ -56,15 +55,14 @@ public class GameNode extends Node
 
     public GameNode(GameNode node)
     {
-        super(node.getParentNode(), node.getDepth(), node.getPathCost(), node.getOperator(), 
-            node.getHeuristic().getNewHeuristic()); 
+        super(node.getParentNode(), node.getDepth(), node.getPathCost(), node.getOperator()); 
             
         board = node.getGameBoard().cloneGameBoard();
     }
 
-    public GameNode(String operator, Heuristic heuristic, GameBoard board)
+    public GameNode(String operator, GameBoard board)
     {
-        super(operator, heuristic);
+        super(operator);
 
         this.board = board;
     }
@@ -184,9 +182,5 @@ public class GameNode extends Node
             }
         }
         return false; 
-    }
-
-    public void calculateHeuristic(char color) {
-        this.heuristic.calculate(board, color, operator.split(" ")[0].equals("move"));
     }
 }

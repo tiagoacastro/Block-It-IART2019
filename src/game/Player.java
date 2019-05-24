@@ -1,28 +1,19 @@
 package game;
 
 import game.GameBoard;
-import game.heuristics.*;
 import game.node.GameNode;
-import game.node.Node;
 import game.node.PlayerNode;
 
 public class Player
 {
     private static int MAX_BARRIERS;
     private static GameNode gameNode;
-
-    private boolean bot;
     private PlayerNode playerNode;
 
     public Player(int difficulty, int[] position, char color)
     {
-        playerNode = new PlayerNode("root", getNewHeuristic(difficulty, color), 
-            gameNode.getGameBoard().cloneGameBoard(), position, color, MAX_BARRIERS);
-
-        if(difficulty > 1)
-            bot = true;
-        else
-            bot = false;
+        playerNode = new PlayerNode(null, 0, 1, "root", gameNode.getGameBoard().cloneGameBoard(), 
+           difficulty, null, position, color, MAX_BARRIERS);        
     }
 
     public Player(int difficulty, char color)
@@ -52,27 +43,15 @@ public class Player
                 position = new int[]{0, 0};
         }
 
-        if(difficulty > 1)
-            bot = true;
-        else
-            bot = false;
-
-        playerNode = new PlayerNode("root", getNewHeuristic(difficulty, color), 
-            null, position, color, MAX_BARRIERS);
+        playerNode = new PlayerNode(null, 0, 1, "root", null, difficulty, null, position, color, MAX_BARRIERS);
     }
 
     //Bot function
     public void play()
     {
-        Node newNode = playerNode.minimax(0, true);
+        String op = playerNode.minimax(0, true);
 
-        if(newNode == null)
-        {
-            System.out.println("MiniMax returned null");
-            return;
-        }
-
-        String[] operatorParams = newNode.getOperator().split(" ");
+        String[] operatorParams = op.split(" ");
 
         if(operatorParams.length != 4)
         {
@@ -85,8 +64,7 @@ public class Player
         else
             useBarrier(Integer.parseInt(operatorParams[3]), Integer.parseInt(operatorParams[2]), operatorParams[1].charAt(0));
 
-        System.out.println(newNode.getOperator());
-        System.out.println(newNode.getHeuristic().getValue());
+        System.out.println("\nChosen: " + op + "\n");
     }
 
     public boolean move(String move)
@@ -155,7 +133,7 @@ public class Player
     
     public boolean isWinner()
     {
-        return playerNode.isWinner();
+        return playerNode.isWinner(playerNode.getColor());
     }
 
     public String getName()
@@ -179,37 +157,19 @@ public class Player
         }
     }
 
-    public Heuristic getNewHeuristic(int difficulty, char color)
-    {
-        switch(difficulty)
-        {
-            case 2:
-                return new CompetitiveHeuristic();
-
-            case 3:
-                return new DirectHeuristic();
-
-            case 4:
-                return new PathHeuristic(color);
-
-            default:
-                return null;
-        }
-    }
-
     public boolean equals(Player p)
     {
         return p.getColor() == playerNode.getColor();
     }
 
-    public boolean isBot()
-    {
-        return bot;
-    }
-
     public int getBarriers()
     {
         return playerNode.getBarriers();
+    }
+
+    public int getDifficulty()
+    {
+        return playerNode.getDifficulty();
     }
 
     public int[] getPosition()

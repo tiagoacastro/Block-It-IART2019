@@ -2,10 +2,8 @@ package game.node;
 
 import game.BlockIt;
 import game.GameBoard;
-import game.Player;
-import game.heuristics.Heuristic;
-
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 
 public class PlayerNode extends GameNode implements Comparable<PlayerNode>
@@ -13,78 +11,41 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
     private int[] position;
     private char color;
     private int barriers;
+    private int difficulty;
+    private Double value;
+    private Double alpha;
+    private Double beta;
 
-    public PlayerNode(Node parentNode, int depth, int pathCost, String operator, Heuristic heuristic, GameBoard board,
-        int[] position, char color)
+    public PlayerNode(PlayerNode parentNode, int depth, int pathCost, String operator, GameBoard board,
+        int difficulty, Double value, int[] position, char color, int barriers)
     {
-        super(parentNode, depth, pathCost, operator, heuristic, board);
+        super(parentNode, depth, pathCost, operator, board);
 
         this.position = position;
         this.color = color;
         this.id = position[0] + "-" + position[1];
+        this.value = value;
+        this.difficulty = difficulty;
+        this.barriers = barriers;
     }
 
-    public PlayerNode(Node parentNode, String operator, GameBoard board, int[] position, char color, int barriers)
+    public PlayerNode(PlayerNode parentNode, String operator, GameBoard board, int[] position, char color, int barriers)
     {
         super(parentNode, operator, board);
 
         this.position = position;
         this.color = color;
         this.id = position[0] + "-" + position[1];
+        this.difficulty = parentNode.getDifficulty();
     }
 
-    public PlayerNode(GameNode modelNode, int[] position, char color)
-    {
-        super(modelNode.getParentNode(), modelNode.getDepth(), modelNode.getPathCost(), 
-            modelNode.getOperator(), modelNode.getHeuristic(), modelNode.getGameBoard());
-
-        this.position = position;
-        this.color = color;
-        this.id = position[0] + "-" + position[1];
-    }
-
-    public PlayerNode(String operator, Heuristic heuristic, GameBoard board, int[] position, char color, int barriers)
-    {
-        super(operator, heuristic, board);
-
-        this.position = position;
-        this.color = color;
-        this.barriers = barriers;
-        this.id = position[0] + "-" + position[1];
-    }
-
-    public PlayerNode(PlayerNode father)
-    {
-        super(father);
-
-        this.position = father.getPosition().clone();
-        this.color = father.getColor();
-        this.barriers = father.getBarriers();
-        this.id = position[0] + "-" + position[1];
-    }
-
-    public ArrayList<PlayerNode> expandPlayerNode(boolean sameColor)
+    public ArrayList<PlayerNode> expandPlayerNode()
     {
         ArrayList<PlayerNode> nodeList = new ArrayList<PlayerNode>();
         GameBoard newBoard;
         char nextColor = color;
-        int[] nextPosition = position.clone();
-
-        if(sameColor)
-        {
-            nextColor = color;
-            nextPosition = position.clone();
-        } 
-        else
-        {
-            for(Player player: BlockIt.getPlayers())
-                if(player.getColor() != color)
-                {
-                    nextPosition = player.getPosition().clone();
-                    nextColor = player.getColor();
-                    break;
-                }
-        }
+        int[] nextPosition = board.getPlayerPosition(nextColor);
+        char[][] charBoard = board.getBoard();
 
         if((newBoard = this.board.moveDown(nextPosition)) != null)
             nodeList.add(new PlayerNode(this, "move down " + nextPosition[0] + " " 
@@ -105,9 +66,6 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         if(barriers <= 0)
             return nodeList;
 
-        char[][] charBoard = board.getBoard();
-
-
         for(int i = 0; i < charBoard.length; i++)
             for(int j = 0; j < charBoard[i].length; j++)
             if(charBoard[i][j] != '_' && charBoard[i][j] != 'X' && charBoard[i][j] != ' ')
@@ -116,35 +74,35 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     {
                         if ((newBoard = board.placeBarrier(j + 1, i - 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i - 1) + " " 
-                            + (j + 1), newBoard, position, nextColor, barriers - 1));
+                            + (j + 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i + 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i + 1) + " " 
-                            + (j + 1), newBoard, position, nextColor, barriers - 1));
+                            + (j + 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i - 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i - 1) + " " 
-                            + (j - 1), newBoard, position, nextColor, barriers - 1));
+                            + (j - 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i + 1, 'v')) != null)
                             nodeList.add(new PlayerNode(this, "barrier v " + (i + 1) + " " 
-                            + (j - 1), newBoard, position, nextColor, barriers - 1));
+                            + (j - 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i - 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i - 1) + " " 
-                            + (j + 1), newBoard, position, nextColor, barriers - 1));
+                            + (j + 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j + 1, i + 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
-                            + (j + 1), newBoard, position, nextColor, barriers - 1));
+                            + (j + 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i - 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i - 1) + " " 
-                            + (j - 1), newBoard, position, nextColor, barriers - 1));
+                            + (j - 1), newBoard, nextPosition, nextColor, barriers - 1));
 
                         if ((newBoard = board.placeBarrier(j - 1, i + 1, 'h')) != null)
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
-                            + (j - 1), newBoard, position, nextColor, barriers - 1));
+                            + (j - 1), newBoard, nextPosition, nextColor, barriers - 1));
                     }
                 }
             /*
@@ -170,12 +128,46 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      * @param maximizingPlayer
      * @return
      */
-    public GameNode minimax(int depth, boolean maximizingPlayer) {        
-        return minimaxAux(this, depth, null, null, maximizingPlayer);
+    public String minimax(int depth, boolean maximizingPlayer) 
+    {        
+        ArrayList<PlayerNode> childNodes = expandPlayerNode();
+        String op = "";
+        Double val = null;
+
+        for(PlayerNode child: childNodes)
+        {
+            //System.out.print(child.getOperator() + " => ");
+
+            child.color = BlockIt.getPlayerAfter(color).getColor();
+
+            child.minimaxAux(depth+1, false);
+
+            if(val == null || child.getValue() >= val)
+            {
+                //System.out.print(" (New val = " + val + ") ");
+                op = child.getOperator();
+                val = child.getValue();
+                this.value = val;
+            }
+
+            if(this.alpha == null || this.value >= this.alpha)
+            this.alpha = this.value;
+
+            System.out.println("(max) current alpha value: " + this.alpha);
+            System.out.println("(max) current beta value: " + this.beta);
+
+            if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                System.out.println("Branch cut in max player");
+                break;
+            } 
+                
+        }
+
+        return op;
     }
 
     /**
-     * Determines the player bot's next move through the use of the minimax algorithm with alpha beta pruning
+     * Determines the player b7ot's next move through the use of the minimax algorithm with alpha beta pruning
      * @param node
      * @param depth
      * @param alpha
@@ -183,115 +175,100 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      * @param maximizingPlayer
      * @return
      */
-    public GameNode alphaBeta(int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) {
-        return minimaxAux(this, depth, alpha, beta, maximizingPlayer);
+    public void alphaBeta(int depth, boolean maximizingPlayer) 
+    {
+        minimaxAux(depth, maximizingPlayer);
     }
 
     /**
-     * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
+     * Determines the player bot's next move through the use of the minimax algorithm, with alpha beta pruning 
      * @param node
      * @param depth
      * @param maximizingPlayer
      * @return
      */
-    private PlayerNode minimaxAux(PlayerNode father, int depth, PlayerNode alpha, PlayerNode beta, boolean maximizingPlayer) {
-
-        PlayerNode value = null;
-        boolean isAlphaBeta = (alpha != null && beta != null), returnFlag = false;
+    private void minimaxAux(int depth, boolean maximizingPlayer) 
+    {
+        boolean isAlphaBeta = /*(alpha != null && beta != null)*/ true;
         ArrayList<PlayerNode> childNodes;
-        char playerColor = (maximizingPlayer ? color : BlockIt.getNextPlayer().getColor());
 
-        if (depth >= Node.MAX_SEARCH_DEPTH || isWinner() || isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor()))) // reached max depth || we won || the other player won 
+        if (depth >= Node.MAX_SEARCH_DEPTH)
         {
-            value = new PlayerNode(father);
-            value.calculateHeuristic(playerColor);
-            return value;
-            //returnFlag = true;
+            if(depth % 2 == 0)
+                this.color = BlockIt.getPlayerAfter(color).getColor();
+
+            calculateHeuristic();
+
+            //if(isWinner(color))
+              //  System.out.println("Winner Inpending: " + color + " " + value);
+
+            return;    
         }
-            
-        /*
-        if(isWinner())
-        {
-            value = new PlayerNode(father);
-            value.getHeuristic().setValue(100);
-            returnFlag = true;
-        }
-        else if(isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor())))
-        {
-            value = new PlayerNode(father);
-            value.getHeuristic().setValue(-100);
-            returnFlag = true;
-        }        
 
-        if(returnFlag)
-            if(value == null)
+        childNodes = expandPlayerNode();
+
+        for (PlayerNode child : childNodes) 
+        {
+            //System.out.print(child.getOperator() + " => ");
+
+            child.color = BlockIt.getPlayerAfter(color).getColor();
+
+            if(maximizingPlayer)
             {
-                value = new PlayerNode(father);
-                value.calculateHeuristic(playerColor);
-                return value;
-            }
-            else
-                return value;
+                child.minimaxAux(depth + 1, false);
 
-        */
-
-        childNodes = father.expandPlayerNode(maximizingPlayer);
-
-        //System.out.println("Children of " + father.getOperator());
-
-        /*
-        for(PlayerNode n: childNodes)
-        {
-            n.calculateHeuristic(playerColor);
-            System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
-        } */
+                if(this.value == null || child.getValue() >= value)
+                {
+                    this.value = child.getValue();
+                    //this.operator = child.getOperator();
+                }
             
-        //System.out.println("\n");
-
-        if (maximizingPlayer) 
-        {
-            for (PlayerNode child : childNodes) 
-            {
-                if(Node.max(value, minimaxAux(child, depth + 1, alpha, beta, false)) == 1)
-                    value = child; 
-            
+                
                 if (isAlphaBeta) 
                 {
-                    if(Node.max(alpha, value) == 1)
-                        alpha = value;
+                    if(this.alpha == null || this.value >= this.alpha)
+                    this.alpha = this.value;
 
-                    if (alpha.ge(beta)) 
+                    System.out.println("(max) current alpha value: " + this.alpha);
+                    System.out.println("(max) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in max player");
                         break;
-                }
-            }  
-        } 
-        else 
-        {
-            for (PlayerNode child : childNodes) 
-            {
-                if(Node.min(value, minimaxAux(child, depth + 1, alpha, beta, true)) == 1)
-                    value = child;
-
-                if(isAlphaBeta) 
-                {
-                    if(Node.min(beta, value) == 1)
-                        beta = value;
-
-                    if (beta.ge(alpha)) //Changed from alpha.ge(beta)
-                        break;
+                    } 
                 } 
             }
-        }
+            else
+            {
+                child.minimaxAux(depth + 1, true);
 
-        return value;
+                if(this.value == null || child.getValue() <= value)
+                {
+                    this.value = child.getValue();
+                    //this.operator = child.getOperator();
+                }
+
+                if (isAlphaBeta) 
+                {
+                    if(this.beta == null || this.value <= this.beta)
+                        this.beta = this.value;
+
+                    System.out.println("(min) current alpha value: " + this.alpha);
+                    System.out.println("(min) current beta value: " + this.beta);
+
+                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                        System.out.println("Branch cut in min player");
+                        break;
+                    } 
+                } 
+            }
+            
+        }
     }
 
-    /**
-     * 
-     */
-    public boolean isWinner()
+    public boolean isWinner(char color)
     {
-        return isWinner(this.color, this.position);
+        return isWinner(color, board.getPlayerPosition(color));
     }
 
     public void useBarrier()
@@ -340,6 +317,16 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         position = newPosition.clone();
     }
 
+    public int getDifficulty()
+    {
+        return difficulty;
+    }
+
+    public double getValue()
+    {
+        return value;
+    }
+
     @Override
     public int compareTo(PlayerNode pn) 
     {
@@ -383,5 +370,221 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         else if(comp > 0)
             return 1;
         return 0;
+    }
+
+    /**
+     * Determines the greater of two nodes, in regards to the heuristic value
+     * @param n
+     * @param m
+     * @return
+     */
+
+    public static int max(PlayerNode n, PlayerNode m) {
+        if (n == null) {
+            return 1;
+        } 
+
+        if (m == null) {
+            return 0;
+        }
+
+        return (n.getValue() > m.getValue() ? 0 : 1);
+    }
+
+    /**
+     * 
+     * @param n
+     * @param m
+     * @return
+     */
+
+    public static int min(PlayerNode n, PlayerNode m) {
+        if (n == null) {
+            return 1;
+        } 
+
+        if (m == null) {
+            return 0;
+        }
+
+        return (n.getValue() < m.getValue() ? 0 : 1);
+    }
+
+
+    /**
+     * Checks if the heuristic value of node a is greater than or equal to that of node b
+     * @param a
+     * @param b
+     * @return
+     */
+
+    public boolean ge(PlayerNode b) {
+        return this.getValue() >= b.getValue();
+    }
+
+    public void calculateHeuristic() 
+    {
+        switch(difficulty)
+        {
+            case 2:
+                competitiveHeuristic();
+                break;
+            case 3:
+                shortestPathHeuristic();
+                break;
+
+            default:
+                System.out.println("Unknown difficulty: " + difficulty);
+                value = 0.0;
+        }
+    }
+
+    public void shortestPathHeuristic()
+    {
+        double currentPlayerValue = AStar(color), 
+            adversaryValue = AStar(BlockIt.getPlayerAfter(color).getColor());
+
+        if(currentPlayerValue == 100)
+            value = 100.0;
+        else
+            value = (GameBoard.getPlayBoardSize() - currentPlayerValue) - (GameBoard.getPlayBoardSize() - adversaryValue);
+
+        //System.out.println("Value of " + color + ": " + value);
+    }
+
+    public double directHeuristic()
+    {
+        return 1;
+    }
+
+    public void competitiveHeuristic()
+    {
+        Integer r = 0, g = 0, b = 0, y = 0;
+
+        System.out.println("\n\n" + board.getPlayers()[0][0] + " " + board.getPlayers()[0][1] + "\n\n");
+
+        if(board.getPlayers()[0][0] != -1)
+            r = GameBoard.getBoardSize() - board.getPlayers()[0][0];
+
+        if(board.getPlayers()[1][0] != -1)
+            g = board.getPlayers()[1][1];
+
+        if(board.getPlayers()[2][0] != -1)
+            b = board.getPlayers()[2][0];
+
+        if(board.getPlayers()[3][0] != -1)
+            y = GameBoard.getBoardSize() - board.getPlayers()[3][1];
+
+        char other = BlockIt.getPlayerAfter(color).getColor();
+        int mine, his;
+
+        mine = getVal(color, r, g, b, y);
+        his = getVal(other, r, g, b, y);
+
+        value = (double) (GameBoard.getBoardSize() - mine) - (GameBoard.getBoardSize() - his);
+    }
+
+    private int getVal(char color, Integer r, Integer g, Integer b, Integer y) {
+        int val = 0;
+        switch (color) {
+            case 'R':
+                val = r;
+                break;
+            case 'G':
+                val = g;
+                break;
+            case 'B':
+                val = b;
+                break;
+            case 'Y':
+                val = y;
+                break;
+        }
+        return val;
+    }
+
+    boolean win(char color, Integer r, Integer g, Integer b, Integer y){
+        switch(color) {
+            case 'R':
+                return r == 0;
+            case 'G':
+                return g == 0;
+            case 'B':
+                return b == 0;
+            case 'Y':
+                return y == 0;
+        }
+
+        return false;
+    }
+
+    public double AStar(char playerColor)
+    {
+        PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<PlayerNode>();
+        ArrayList<PlayerNode> children = new ArrayList<PlayerNode>();
+        ArrayList<String> visitedNodes = new ArrayList<String>();
+        PlayerNode currentNode;
+        boolean active = false, visited = false, foundSolution;
+        int[] playerPos = board.getPlayerPosition(playerColor);
+
+        Node.getSolution().clear();
+        Node.getSolution().trimToSize();
+        
+        foundSolution = false;
+
+        //barrier no doesn't matter here
+        activeNodes.add(new PlayerNode(null, 0, 1, "root", board, difficulty, 0.0, playerPos, playerColor, barriers));
+
+        while (!activeNodes.isEmpty())
+        {
+            currentNode = activeNodes.peek();
+
+            if(currentNode.isWinner(currentNode.getColor()))
+            {
+                if(currentNode.getOperator().equals("root"))
+                    return 100;
+                
+                currentNode.traceSolutionUp();
+                foundSolution = true;
+                break;
+            }
+
+            activeNodes.poll();
+            visitedNodes.add(currentNode.getId());
+
+            children = currentNode.expandPlayerNode();
+
+            for (PlayerNode child : children)
+            {
+                for (String id : visitedNodes)
+                    if (id.equals(child.getId()))
+                    {
+                        visited = true;
+                        break;
+                    }
+
+                if (visited)
+                {
+                    visited = false;
+                    continue;
+                }
+
+                for (PlayerNode n : activeNodes)
+                    if (n.getId().equals(child.getId())) {
+                        active = true;
+                        break;
+                    }
+
+                if (!active)
+                    activeNodes.add((PlayerNode) child);
+
+                active = false;
+            }
+        }
+
+        if(foundSolution)
+            return Node.getSolution().size();
+        else
+            return 0;
     }
 }
