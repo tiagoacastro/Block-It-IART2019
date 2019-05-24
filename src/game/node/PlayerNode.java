@@ -139,7 +139,8 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             //System.out.print(child.getOperator() + " => ");
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
-
+            child.alpha = this.alpha;
+            child.beta = this.beta;
             child.minimaxAux(depth, false);
 
             if(val == null || child.getValue() >= val)
@@ -215,6 +216,8 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             if(maximizingPlayer)
             {
+                child.alpha = this.alpha;
+                child.beta = this.beta;
                 child.minimaxAux(depth + 1, false);
 
                 if(this.value == null || child.getValue() >= value)
@@ -239,7 +242,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                 } 
             }
             else
-            {
+            {   
+                child.alpha = this.alpha;
+                child.beta = this.beta;
                 child.minimaxAux(depth + 1, true);
 
                 if(this.value == null || child.getValue() <= value)
