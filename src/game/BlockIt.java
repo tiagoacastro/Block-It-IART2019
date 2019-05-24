@@ -305,15 +305,13 @@ public class BlockIt
                 + "+---------------+\n"
                 + "| 1 - Human     |\n"
                 + "+---------------+\n"
-                + "| 2 - Easy      |\n"
+                + "| 2 - Normal    |\n"
                 + "+---------------+\n"
-                + "| 3 - Normal    |\n"
-                + "+---------------+\n"
-                + "| 4 - Hard      |\n"
+                + "| 3 - Hard      |\n"
                 + "+---------------+\n"
             );
 
-            option = getOption(4);
+            option = getOption(3);
 
             players.add(new Player(option, colors[colorOption - 1]));
         }

@@ -1,5 +1,6 @@
 package game.heuristics;
 
+import game.BlockIt;
 import game.GameBoard;
 
 /**
@@ -14,25 +15,17 @@ public class DirectHeuristic extends Heuristic
        */
       public void calculate(GameBoard board, char color, boolean move) {
             calculatedistances(board);
+            char other = BlockIt.getPlayerAfter(color).getColor();
 
-            if(otherWin(board, color))
-                  value = Integer.MIN_VALUE;
-            else
-                  switch(color)
-                  {
-                        case 'R':
-                              this.value = r;
-                              break;
-                        case 'G':
-                              this.value = g;
-                              break;
-                        case 'B':
-                              this.value = b;
-                              break;
-                        case 'Y':
-                              this.value = y;
-                              break;
+            if(win(other))
+                  value = Integer.MAX_VALUE;
+            else {
+                  if (win(color))
+                        value = Integer.MAX_VALUE;
+                  else {
+                        value = getVal(color);
                   }
+            }
       }
 
       /**

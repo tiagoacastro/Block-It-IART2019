@@ -187,6 +187,63 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         return minimaxAux(this, depth, alpha, beta, maximizingPlayer);
     }
 
+
+
+
+
+    private static GameNode choice;
+
+    public GameNode minimaxCastro() {
+        minimaxCastroAux(this, Node.MAX_SEARCH_DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+        return choice;
+    }
+
+    private int minimaxCastroAux(PlayerNode father, int depth, int alpha, int beta, boolean maximizing) {
+        int maxEval, minEval, eval;
+        ArrayList<PlayerNode> childNodes;
+
+        if (depth == 0 || isWinner(father.getColor(), father.getGameBoard().getPlayerPosition(father.getColor())) || isWinner(BlockIt.getNextPlayer().getColor(), father.getGameBoard().getPlayerPosition(BlockIt.getNextPlayer().getColor()))) {
+            return father.calculateHeuristic(color);
+        }
+
+        childNodes = father.expandPlayerNode(maximizing);
+
+        if(maximizing){
+            maxEval = Integer.MIN_VALUE;
+
+            for(PlayerNode child : childNodes){
+                eval = minimaxCastroAux(child, depth-1, alpha, beta, false);
+                maxEval = Math.max(maxEval, eval);
+                alpha = Math.max(alpha, eval);
+                if(eval >= maxEval) {
+                    System.out.println("hey");
+                    choice = child;
+                }
+                if(beta <= alpha)
+                    break;
+            }
+
+            return maxEval;
+        } else {
+            minEval = Integer.MAX_VALUE;
+
+            for(PlayerNode child : childNodes){
+                eval = minimaxCastroAux(child, depth-1, alpha, beta, true);
+                minEval = Math.min(minEval, eval);
+                beta = Math.min(beta, eval);
+                if(beta <= alpha)
+                    break;
+            }
+
+            return minEval;
+        }
+    }
+
+
+
+
+
     /**
      * Determines the player bot's next move through the use of the minimax algorithm, with or without alpha beta pruning depending on the user input
      * @param node

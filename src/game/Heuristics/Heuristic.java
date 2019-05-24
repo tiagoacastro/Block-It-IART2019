@@ -9,12 +9,12 @@ public abstract class Heuristic {
 	/**
 	 * The current value of the heuristic.
 	 */
-	protected double value;
+	int value;
 
-	int r = Integer.MAX_VALUE;
-	int g = Integer.MAX_VALUE;
-	int b = Integer.MAX_VALUE;
-	int y = Integer.MAX_VALUE;
+	private int r = Integer.MAX_VALUE;
+	private int g = Integer.MAX_VALUE;
+	private int b = Integer.MAX_VALUE;
+	private int y = Integer.MAX_VALUE;
 	
 	/**
 	 * Constructor of the class, initiates it's value to 0.
@@ -37,15 +37,6 @@ public abstract class Heuristic {
 	 */
 	public abstract Heuristic getNewHeuristic();
 
-	/**
-	 * Compare for comparation purposes
-	 * @param h heuristic to compare to
-	 * @return difference
-	 */
-	public double compare(Heuristic h) {
-		return this.value - h.value;
-	}
-
 	void calculatedistances(GameBoard board){
 		if(board.getPlayers()[0][0] != -1)
 			r = GameBoard.getBoardSize() - board.getPlayers()[0][1];
@@ -60,28 +51,42 @@ public abstract class Heuristic {
 			y = GameBoard.getBoardSize() - board.getPlayers()[3][0];
 	}
 
-	protected boolean otherWin(GameBoard board, char color){
+	boolean win(char color){
 		switch(color) {
 			case 'R':
-				return g == 0 || b == 0 || y == 0;
+				return r == 0;
 			case 'G':
-				return r == 0 || b == 0 || y == 0;
+				return g == 0;
 			case 'B':
-				return r == 0 || g == 0 || y == 0;
+				return b == 0;
 			case 'Y':
-				return r == 0 || g == 0 || b == 0;
+				return y == 0;
 		}
 
 		return false;
 	}
 
-	public double getValue()
-	{
-		return value;
+	int getVal(char color) {
+		int val = 0;
+		switch (color) {
+			case 'R':
+				val = r;
+				break;
+			case 'G':
+				val = g;
+				break;
+			case 'B':
+				val = b;
+				break;
+			case 'Y':
+				val = y;
+				break;
+		}
+		return val;
 	}
 
-	public void setValue(double newValue)
+	public int getValue()
 	{
-		value = newValue;
+		return value;
 	}
 }

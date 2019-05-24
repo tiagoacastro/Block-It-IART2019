@@ -64,7 +64,7 @@ public class Player
     //Bot function
     public void play()
     {
-        Node newNode = playerNode.minimax(0, true);
+        Node newNode = playerNode.minimaxCastro();
 
         if(newNode == null)
         {
@@ -187,9 +187,6 @@ public class Player
                 return new CompetitiveHeuristic();
 
             case 3:
-                return new DirectHeuristic();
-
-            case 4:
                 return new PathHeuristic(color);
 
             default:

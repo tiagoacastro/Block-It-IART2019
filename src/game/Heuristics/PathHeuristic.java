@@ -25,22 +25,19 @@ public class PathHeuristic extends Heuristic
      * @param board The board to which the heuristic's value is calculated.
      * @param color The color of the player
      */
-    public void calculate(GameBoard board, char playerColor, boolean move) 
+    public void calculate(GameBoard board, char color, boolean move)
     {
-        double currentPlayerValue = AStar(board, playerColor), 
-            adversaryValue = AStar(board, BlockIt.getPlayerAfter(playerColor).getColor());
+        int mine = AStar(board, color);
+        int his = AStar(board, BlockIt.getPlayerAfter(color).getColor());
 
-        if(!move)
-            currentPlayerValue++;
-
-        value = (GameBoard.getPlayBoardSize() - currentPlayerValue);
+        value = mine - his;
     }
 
-    public double AStar(GameBoard board, char playerColor)
+    private int AStar(GameBoard board, char playerColor)
     {
-        PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<PlayerNode>();
-        ArrayList<PlayerNode> children = new ArrayList<PlayerNode>();
-        ArrayList<String> visitedNodes = new ArrayList<String>();
+        PriorityQueue<PlayerNode> activeNodes = new PriorityQueue<>();
+        ArrayList<PlayerNode> children;
+        ArrayList<String> visitedNodes = new ArrayList<>();
         PlayerNode currentNode;
         boolean active = false, visited = false, foundSolution;
         int[] playerPos = board.getPlayerPosition(playerColor);
@@ -90,7 +87,7 @@ public class PathHeuristic extends Heuristic
                     }
 
                 if (!active)
-                    activeNodes.add((PlayerNode) child);
+                    activeNodes.add(child);
 
                 active = false;
             }
