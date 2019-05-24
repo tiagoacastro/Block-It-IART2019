@@ -431,12 +431,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         switch(difficulty)
         {
             case 2:
-                //return new DirectHeuristic();
-
-            case 3:
                 competitiveHeuristic();
                 break;
-            case 4:
+            case 3:
                 shortestPathHeuristic();
                 break;
 
