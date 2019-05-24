@@ -11,7 +11,7 @@ public abstract class Node
     /**
      * Determines minimax's max search depth
      */
-    public static int MAX_SEARCH_DEPTH = 2;
+    public static int MAX_SEARCH_DEPTH = 5;
 
     /**
      * The parent node of this node.

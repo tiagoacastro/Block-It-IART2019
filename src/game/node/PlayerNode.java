@@ -160,7 +160,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
-            child.minimaxAux(depth+1, false);
+            child.minimaxAux(depth, this.alpha, this.beta, false);
 
             if(val == null || child.getValue() > val)
             {
@@ -196,7 +196,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      */
     public void alphaBeta(int depth, boolean maximizingPlayer) 
     {
-        minimaxAux(depth, maximizingPlayer);
+        //minimaxAux(depth, maximizingPlayer);
     }
 
     /**
@@ -206,10 +206,11 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
      * @param maximizingPlayer
      * @return
      */
-    private void minimaxAux(int depth, boolean maximizingPlayer) 
+    private void minimaxAux(int depth, Double alpha, Double beta, boolean maximizingPlayer) 
     {
         boolean isAlphaBeta = /*(alpha != null && beta != null)*/ true;
         ArrayList<PlayerNode> childNodes;
+        this.alpha = alpha; this.beta = beta;
 
         if (depth >= Node.MAX_SEARCH_DEPTH)
         {
@@ -242,7 +243,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
             if(maximizingPlayer)
             {
-                child.minimaxAux(depth + 1, false);
+                child.minimaxAux(depth + 1, this.alpha, this.beta, false);
 
                 if(this.value == null || child.getValue() >= value)
                 {
@@ -267,7 +268,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             }
             else
             {
-                child.minimaxAux(depth + 1, true);
+                child.minimaxAux(depth + 1, this.alpha, this.beta, true);
 
                 if(this.value == null || child.getValue() <= value)
                 {
