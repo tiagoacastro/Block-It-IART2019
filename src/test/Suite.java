@@ -17,30 +17,32 @@ public class Suite
     
         for(int i = 2; i <= 3; i++)
         {
-            for(int j = 1; j <= 10; j++)
-            {
-                Node.MAX_SEARCH_DEPTH = j;
+            for(int ii = 2; ii <= 3; ii++) {
+                for (int j = 3; j <= 7; j=j+2) {
+                    Node.MAX_SEARCH_DEPTH = j;
 
-                Player p1 = new Player(i, 'R');
+                    Player p1 = new Player(i, 'R');
+                    Player p2 = new Player(ii, 'G');
 
-                players.add(p1);
-    
-                BlockIt.setPlayers(players);
-                BlockIt.buildBoard();
-    
-                for(Player player: players)
-                    player.setPlayerNodeBoard(Player.getBoard());
-    
-                startTime = System.currentTimeMillis();
-                p1.play(true);
-                endTime = System.currentTimeMillis();
+                    players.add(p1);
+                    players.add(p2);
 
-                System.out.println("Bot with difficulty " + i + " and max search depth of " + j + ": " + (endTime - startTime) + " ms\n");
+                    BlockIt.setPlayers(players);
+                    BlockIt.buildBoard();
 
-                players.clear();
-                players.trimToSize();
+                    for (Player player : players)
+                        player.setPlayerNodeBoard(Player.getBoard());
+
+                    startTime = System.currentTimeMillis();
+                    p1.play(true);
+                    endTime = System.currentTimeMillis();
+
+                    System.out.println("Simultating move for Bot1 with difficulty " + i + ", Bot2 with difficulty " + ii +" and max search depth of " + j + ": " + (endTime - startTime) + " ms\n");
+
+                    players.clear();
+                    players.trimToSize();
+                }
             }
-            
         }
     }
 }
