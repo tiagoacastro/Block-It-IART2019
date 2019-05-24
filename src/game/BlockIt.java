@@ -443,6 +443,7 @@ public class BlockIt
             "- The first player who gets across the board, reaching the respective color's line, wins the game.\n"
             + "- This is a turn based game. At each turn you have two options: 'Move' or 'Put a barrier'.\n"
             + "- The player can place a barrier only if he has any available.\n"
+            + "- The central piece of a barrier can never be in front of an 'island' and must be in a free 'water' position\n"
         );
     }
 
