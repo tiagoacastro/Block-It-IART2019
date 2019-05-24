@@ -30,7 +30,7 @@ public class Suite
 
         System.out.println(pos[0] + "|" + pos[1]);
 
-        ArrayList<PlayerNode> children = p1.getPlayerNode().expandPlayerNode(true);
+        ArrayList<PlayerNode> children = p1.getPlayerNode().expandPlayerNode();
 
         for(Node n: children)
             System.out.println(n.getOperator());
