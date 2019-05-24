@@ -104,19 +104,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                             nodeList.add(new PlayerNode(this, "barrier h " + (i + 1) + " " 
                             + (j - 1), newBoard, nextPosition, nextColor, barriers - 1));
                     }
-                }
-            /*
-            {
-                if((newBoard = board.placeBarrier(j, i, 'v')) != null)
-                    nodeList.add(new PlayerNode(this, "barrier v " + i + " " + j, newBoard, position, nextColor, 
-                    barriers - 1));
-
-                if((newBoard = board.placeBarrier(j, i, 'h')) != null)
-                    nodeList.add(new PlayerNode(this, "barrier h " + i + " " + j, newBoard, position, nextColor, 
-                    barriers - 1));
-            }*/
-            
-                
+                }                
                 
         return nodeList;
     }
@@ -151,6 +139,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                 this.value = val;
             }
 
+            /*
             if(this.alpha == null || this.value >= this.alpha)
                 this.alpha = this.value;
 
@@ -160,7 +149,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             if (this.beta != null && this.alpha != null && child.value >= this.beta) {
                 //System.out.println("Branch cut in max player");
                 break;
-            } 
+            } */
                 
         }
 
@@ -193,19 +182,23 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         boolean isAlphaBeta = /*(alpha != null && beta != null)*/ true;
         ArrayList<PlayerNode> childNodes;
 
+        if(isWinner(color))
+        {
+            this.value = 100.0 - depth;
+            return;
+        }
+
         if (depth >= Node.MAX_SEARCH_DEPTH)
         {
             if(depth % 2 == 0)
                 this.color = BlockIt.getPlayerAfter(color).getColor();
 
-            calculateHeuristic();
-
-            //if(isWinner(color))
-              //  System.out.println("Winner Inpending: " + color + " " + value);
+            calculateHeuristic(depth);
 
             return;    
         }
 
+        
         childNodes = expandPlayerNode();
 
         for (PlayerNode child : childNodes) 
@@ -226,7 +219,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
             
-                
+                /*
                 if (isAlphaBeta) 
                 {
                     if(this.alpha == null || this.value >= this.alpha)
@@ -240,7 +233,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                         break;
                     } 
                     
-                } 
+                } */
             }
             else
             {   
@@ -254,6 +247,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     //this.operator = child.getOperator();
                 }
 
+                /*
                 if (isAlphaBeta) 
                 {
                     if(this.beta == null || this.value <= this.beta)
@@ -267,7 +261,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                         break;
                     } 
                     
-                } 
+                } */
             }
             
         }
@@ -429,7 +423,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         return this.getValue() >= b.getValue();
     }
 
-    public void calculateHeuristic() 
+    public void calculateHeuristic(int depth) 
     {
         switch(difficulty)
         {
@@ -437,7 +431,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                 competitiveHeuristic();
                 break;
             case 3:
-                shortestPathHeuristic();
+                shortestPathHeuristic(depth);
                 break;
 
             default:
@@ -446,13 +440,13 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         }
     }
 
-    public void shortestPathHeuristic()
+    public void shortestPathHeuristic(int depth)
     {
         double currentPlayerValue = AStar(color), 
             adversaryValue = AStar(BlockIt.getPlayerAfter(color).getColor());
 
         if(currentPlayerValue == 100)
-            value = 100.0;
+            value = 100.0 - depth;
         else
             value = (GameBoard.getPlayBoardSize() - currentPlayerValue) - (GameBoard.getPlayBoardSize() - adversaryValue);
 
