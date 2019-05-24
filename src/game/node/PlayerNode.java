@@ -152,12 +152,12 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             }
 
             if(this.alpha == null || this.value >= this.alpha)
-            this.alpha = this.value;
+                this.alpha = this.value;
 
             System.out.println("(max) current alpha value: " + this.alpha);
             System.out.println("(max) current beta value: " + this.beta);
 
-            if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+            if (this.beta != null && this.alpha != null && child.value >= this.beta) {
                 System.out.println("Branch cut in max player");
                 break;
             } 
@@ -235,10 +235,11 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     System.out.println("(max) current alpha value: " + this.alpha);
                     System.out.println("(max) current beta value: " + this.beta);
 
-                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                    if (this.beta != null && this.alpha != null && child.value >= this.beta) {
                         System.out.println("Branch cut in max player");
                         break;
                     } 
+                    
                 } 
             }
             else
@@ -261,10 +262,11 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
                     System.out.println("(min) current alpha value: " + this.alpha);
                     System.out.println("(min) current beta value: " + this.beta);
 
-                    if (this.beta != null && this.alpha != null && this.alpha >= this.beta) {
+                    if (this.beta != null && this.alpha != null && child.value <= this.alpha) {
                         System.out.println("Branch cut in min player");
                         break;
                     } 
+                    
                 } 
             }
             
