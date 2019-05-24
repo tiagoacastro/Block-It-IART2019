@@ -482,20 +482,10 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         char other = BlockIt.getPlayerAfter(color).getColor();
         int mine, his;
 
-        if (win(other, r, g, b, y))
-            value = Double.MIN_VALUE;
-        else {
-            if (win(color, r, g, b, y))
-                value = Double.MAX_VALUE;
-            else {
-                mine = getVal(color, r, g, b, y);
-                his = getVal(other, r, g, b, y);
+        mine = getVal(color, r, g, b, y);
+        his = getVal(other, r, g, b, y);
 
-                value = (double) (GameBoard.getBoardSize() - mine) - (GameBoard.getBoardSize() - his);
-            }
-        }
-
-
+        value = (double) (GameBoard.getBoardSize() - mine) - (GameBoard.getBoardSize() - his);
     }
 
     private int getVal(char color, Integer r, Integer g, Integer b, Integer y) {
