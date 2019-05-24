@@ -37,26 +37,6 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         this.difficulty = parentNode.getDifficulty();
     }
 
-    public PlayerNode(String operator, GameBoard board, int[] position, char color, int barriers)
-    {
-        super(operator, board);
-
-        this.position = position;
-        this.color = color;
-        this.barriers = barriers;
-        this.id = position[0] + "-" + position[1];
-    }
-
-    public PlayerNode(PlayerNode father)
-    {
-        super(father);
-
-        this.position = father.getPosition().clone();
-        this.color = father.getColor();
-        this.barriers = father.getBarriers();
-        this.id = position[0] + "-" + position[1];
-    }
-
     public ArrayList<PlayerNode> expandPlayerNode()
     {
         ArrayList<PlayerNode> nodeList = new ArrayList<PlayerNode>();
@@ -154,14 +134,15 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
 
         for(PlayerNode child: childNodes)
         {
-            System.out.print(child.getOperator() + " => ");
+            //System.out.print(child.getOperator() + " => ");
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
             child.minimaxAux(depth, null, null, false);
 
-            if(val == null || child.getValue() > val)
+            if(val == null || child.getValue() >= val)
             {
+                //System.out.print(" (New val = " + val + ") ");
                 op = child.getOperator();
                 val = child.getValue();
             }
@@ -172,7 +153,7 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
     }
 
     /**
-     * Determines the player bot's next move through the use of the minimax algorithm with alpha beta pruning
+     * Determines the player b7ot's next move through the use of the minimax algorithm with alpha beta pruning
      * @param node
      * @param depth
      * @param alpha
@@ -202,27 +183,19 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
             if(depth % 2 == 0)
                 this.color = BlockIt.getPlayerAfter(color).getColor();
 
-            
             calculateHeuristic();
+
+            //if(isWinner(color))
+              //  System.out.println("Winner Inpending: " + color + " " + value);
+
             return;    
         }
 
         childNodes = expandPlayerNode();
 
-        //System.out.println("Children of " + father.getOperator());
-
-        /*
-        for(PlayerNode n: childNodes)
-        {
-            n.calculateHeuristic(playerColor);
-            System.out.print(n.getOperator() + "-" + n.getHeuristic().getValue() + " " ); 
-        } */
-            
-        //System.out.println("\n");
-
         for (PlayerNode child : childNodes) 
         {
-            System.out.print(child.getOperator() + " => ");
+           //System.out.print(child.getOperator() + " => ");
 
             child.color = BlockIt.getPlayerAfter(color).getColor();
 
@@ -270,9 +243,9 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         }
     }
 
-    public boolean isWinner()
+    public boolean isWinner(char color)
     {
-        return isWinner(this.color, this.position);
+        return isWinner(color, board.getPlayerPosition(color));
     }
 
     public void useBarrier()
@@ -451,9 +424,12 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         double currentPlayerValue = AStar(color), 
             adversaryValue = AStar(BlockIt.getPlayerAfter(color).getColor());
 
-        value = (GameBoard.getPlayBoardSize() - currentPlayerValue) - (GameBoard.getPlayBoardSize() - adversaryValue);
+        if(currentPlayerValue == 100)
+            value = 100.0;
+        else
+            value = (GameBoard.getPlayBoardSize() - currentPlayerValue) - (GameBoard.getPlayBoardSize() - adversaryValue);
 
-        System.out.println("Value of " + color + ": " + value);
+        //System.out.println("Value of " + color + ": " + value);
     }
 
     public double competitiveHeuristic()
@@ -481,14 +457,17 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         foundSolution = false;
 
         //barrier no doesn't matter here
-        activeNodes.add(new PlayerNode(null, 0, 1, "root", board, difficulty, null, playerPos, playerColor, barriers));
+        activeNodes.add(new PlayerNode(null, 0, 1, "root", board, difficulty, 0.0, playerPos, playerColor, barriers));
 
         while (!activeNodes.isEmpty())
         {
             currentNode = activeNodes.peek();
 
-            if(currentNode.isWinner())
+            if(currentNode.isWinner(currentNode.getColor()))
             {
+                if(currentNode.getOperator().equals("root"))
+                    return 100;
+                
                 currentNode.traceSolutionUp();
                 foundSolution = true;
                 break;
@@ -530,6 +509,6 @@ public class PlayerNode extends GameNode implements Comparable<PlayerNode>
         if(foundSolution)
             return Node.getSolution().size();
         else
-            return Integer.MAX_VALUE;
+            return 0;
     }
 }
